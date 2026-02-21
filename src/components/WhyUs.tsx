@@ -25,107 +25,201 @@ export default function WhyUs() {
     <section className="py-24 bg-navy-800/30 overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
-          <div className="relative h-[500px] flex items-center justify-center">
+          <div className="relative">
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative w-full h-full flex items-center justify-center"
+              className="w-full aspect-square glass rounded-[40px] flex items-center justify-center relative overflow-hidden group"
             >
-              {/* Central Core */}
-              <motion.div
-                animate={{ 
-                  rotate: [0, 360],
-                  scale: [1, 1.05, 1]
-                }}
-                transition={{ 
-                  duration: 20, 
-                  repeat: Infinity, 
-                  ease: "linear" 
-                }}
-                className="relative z-20 w-48 h-48"
-              >
-                <div className="absolute inset-0 bg-gold-500/20 blur-3xl rounded-full animate-pulse" />
-                <div className="w-full h-full glass rounded-[40px] border-2 border-gold-500/30 flex items-center justify-center rotate-45 overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-gold-500/20 to-transparent absolute inset-0" />
+              {/* Background Grid */}
+              <div className="absolute inset-0 opacity-10" 
+                style={{ 
+                  backgroundImage: 'linear-gradient(to right, #D4AF37 1px, transparent 1px), linear-gradient(to bottom, #D4AF37 1px, transparent 1px)',
+                  backgroundSize: '40px 40px'
+                }} 
+              />
+              
+              {/* Assembling UI Elements */}
+              <div className="absolute inset-0 pointer-events-none">
+                {/* Header Block */}
+                <motion.div
+                  initial={{ y: -100, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+                  className="absolute top-12 left-12 right-12 h-8 glass rounded-lg border-gold-500/20 flex items-center px-4 gap-2"
+                >
+                  <div className="w-2 h-2 rounded-full bg-gold-500/40" />
+                  <div className="w-12 h-1 bg-gold-500/20 rounded" />
+                </motion.div>
+
+                {/* Sidebar Block */}
+                <motion.div
+                  initial={{ x: -100, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.7, duration: 1, ease: "easeOut" }}
+                  className="absolute top-24 left-12 bottom-24 w-12 glass rounded-lg border-gold-500/20 flex flex-col items-center py-4 gap-4"
+                >
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="w-6 h-6 rounded bg-gold-500/10" />
+                  ))}
+                </motion.div>
+
+                {/* Content Cards */}
+                {[
+                  { top: '24%', left: '30%', w: '120px', h: '80px', delay: 0.9 },
+                  { top: '24%', left: '65%', w: '100px', h: '120px', delay: 1.1 },
+                  { top: '55%', left: '30%', w: '140px', h: '100px', delay: 1.3 },
+                ].map((card, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0, opacity: 0, rotate: -10 }}
+                    whileInView={{ scale: 1, opacity: 1, rotate: 0 }}
+                    transition={{ delay: card.delay, duration: 0.8, type: "spring" }}
+                    style={{ top: card.top, left: card.left, width: card.w, height: card.h }}
+                    className="absolute glass rounded-xl border-gold-500/30 p-3 flex flex-col gap-2 shadow-xl"
+                  >
+                    <div className="w-1/2 h-2 bg-gold-500/30 rounded" />
+                    <div className="w-full h-1 bg-gold-500/10 rounded" />
+                    <div className="w-full h-1 bg-gold-500/10 rounded" />
+                    <div className="mt-auto w-8 h-4 bg-gold-500/40 rounded-md self-end" />
+                  </motion.div>
+                ))}
+
+                {/* Floating Code Snippets */}
+                <motion.div
+                  initial={{ x: 50, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 1.5, duration: 1 }}
+                  className="absolute bottom-12 right-12 glass rounded-lg border-gold-500/20 p-4 font-mono text-[8px] text-gold-500/60"
+                >
+                  <div>const app = () =&gt; &#123;</div>
+                  <div className="pl-2">return &lt;AI /&gt;;</div>
+                  <div>&#125;;</div>
+                </motion.div>
+              </div>
+
+              {/* Central Core (The "Engine") */}
+              <div className="relative z-10 flex items-center justify-center">
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.1, 1],
+                    boxShadow: [
+                      "0 0 20px rgba(212,175,55,0.2)",
+                      "0 0 40px rgba(212,175,55,0.4)",
+                      "0 0 20px rgba(212,175,55,0.2)"
+                    ]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="w-32 h-32 glass rounded-3xl border-2 border-gold-500/50 flex items-center justify-center rotate-45 relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-gold-500/20 to-transparent" />
                   <motion.div 
-                    animate={{ rotate: -405 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="font-serif font-bold text-6xl text-gold-500 z-10"
+                    animate={{ rotate: -45 }}
+                    className="font-serif font-bold text-4xl text-gold-500 z-10"
                   >
                     C
                   </motion.div>
-                </div>
-              </motion.div>
-
-              {/* Orbiting Nodes & Connections */}
-              <div className="absolute inset-0 z-10">
-                {[...Array(6)].map((_, i) => (
+                  
+                  {/* Internal Scanning Line */}
                   <motion.div
-                    key={i}
-                    className="absolute top-1/2 left-1/2"
-                    animate={{
-                      rotate: [i * 60, i * 60 + 360],
-                    }}
-                    transition={{
-                      duration: 15 + i * 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  >
-                    <motion.div
-                      animate={{
-                        x: [120, 160, 120],
-                        scale: [1, 1.2, 1],
-                        opacity: [0.3, 0.8, 0.3]
-                      }}
-                      transition={{
-                        duration: 3 + i,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                      className="w-4 h-4 rounded-full bg-gold-500 shadow-[0_0_15px_rgba(212,175,55,0.5)]"
-                    />
-                    {/* Connecting Line to Center */}
-                    <div 
-                      className="absolute top-2 left-2 h-[1px] bg-gradient-to-r from-gold-500/50 to-transparent origin-left"
-                      style={{ width: '140px', transform: 'rotate(180deg)' }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Data Flow Particles */}
-              <div className="absolute inset-0">
-                {[...Array(12)].map((_, i) => (
-                  <motion.div
-                    key={`p-${i}`}
-                    initial={{ 
-                      x: Math.random() * 400 - 200, 
-                      y: Math.random() * 400 - 200,
-                      opacity: 0 
-                    }}
-                    animate={{ 
-                      y: [null, Math.random() * -100 - 50],
-                      opacity: [0, 1, 0],
-                      scale: [0, 1, 0]
-                    }}
-                    transition={{ 
-                      duration: 2 + Math.random() * 3, 
-                      repeat: Infinity, 
-                      delay: Math.random() * 5 
-                    }}
-                    className="absolute w-1 h-1 bg-gold-400 rounded-full"
+                    animate={{ top: ["-100%", "200%"] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="absolute left-0 right-0 h-1/2 bg-gradient-to-b from-transparent via-gold-500/20 to-transparent -rotate-45"
                   />
-                ))}
+                </motion.div>
               </div>
 
-              {/* Rotating Rings */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[300px] h-[300px] border border-gold-500/10 rounded-full animate-spin-slow" />
-                <div className="w-[400px] h-[400px] border border-gold-500/5 rounded-full animate-reverse-spin-slow" />
-              </div>
+              {/* Connecting "Laser" Lines & Data Flow */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+                <defs>
+                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(212,175,55,0)" />
+                    <stop offset="50%" stopColor="rgba(212,175,55,0.5)" />
+                    <stop offset="100%" stopColor="rgba(212,175,55,0)" />
+                  </linearGradient>
+                </defs>
+                
+                {/* Lines to UI Elements (Hub & Spoke) */}
+                {[
+                  { d: "M 200,200 L 200,60", delay: 1.5 }, // To Header
+                  { d: "M 200,200 L 60,200", delay: 1.7 },  // To Sidebar
+                  { d: "M 200,200 L 140,120", delay: 1.9 }, // To Card 1
+                  { d: "M 200,200 L 280,140", delay: 2.1 }, // To Card 2
+                  { d: "M 200,200 L 150,260", delay: 2.3 }, // To Card 3
+                ].map((line, i) => (
+                  <g key={`hub-${i}`}>
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 0.3 }}
+                      transition={{ delay: line.delay, duration: 1 }}
+                      d={line.d}
+                      stroke="#D4AF37"
+                      strokeWidth="1"
+                      fill="none"
+                      strokeDasharray="4 4"
+                    />
+                    <motion.path
+                      initial={{ pathOffset: 0, opacity: 0 }}
+                      animate={{ pathOffset: [-1, 0], opacity: [0, 1, 0] }}
+                      transition={{ 
+                        delay: line.delay + 1, 
+                        duration: 2, 
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                      d={line.d}
+                      stroke="url(#lineGradient)"
+                      strokeWidth="2"
+                      fill="none"
+                      pathLength="1"
+                    />
+                  </g>
+                ))}
+
+                {/* Inter-component Connections (Mesh Network) */}
+                {[
+                  { d: "M 200,60 L 140,120", delay: 2.5 },  // Header to Card 1
+                  { d: "M 200,60 L 280,140", delay: 2.7 },  // Header to Card 2
+                  { d: "M 60,200 L 140,120", delay: 2.9 },  // Sidebar to Card 1
+                  { d: "M 60,200 L 150,260", delay: 3.1 },  // Sidebar to Card 3
+                  { d: "M 140,120 L 280,140", delay: 3.3 }, // Card 1 to Card 2
+                  { d: "M 140,120 L 150,260", delay: 3.5 }, // Card 1 to Card 3
+                ].map((line, i) => (
+                  <g key={`mesh-${i}`}>
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 0.15 }}
+                      transition={{ delay: line.delay, duration: 1.2 }}
+                      d={line.d}
+                      stroke="#D4AF37"
+                      strokeWidth="0.5"
+                      fill="none"
+                      strokeDasharray="2 2"
+                    />
+                    <motion.path
+                      initial={{ pathOffset: 0, opacity: 0 }}
+                      animate={{ pathOffset: [1, 0], opacity: [0, 0.5, 0] }}
+                      transition={{ 
+                        delay: line.delay + 1.5, 
+                        duration: 3, 
+                        repeat: Infinity,
+                        ease: "linear"
+                      }}
+                      d={line.d}
+                      stroke="url(#lineGradient)"
+                      strokeWidth="1"
+                      fill="none; opacity: 0.3"
+                      pathLength="1"
+                    />
+                  </g>
+                ))}
+              </svg>
             </motion.div>
+            
+            {/* External Glows */}
+            <div className="absolute -top-10 -left-10 w-40 h-40 bg-gold-500/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-navy-700/50 rounded-full blur-3xl" />
           </div>
 
           <div>

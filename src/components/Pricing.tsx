@@ -13,7 +13,8 @@ const plans = [
       "Гар утсанд нийцтэй",
       "1 сарын дэмжлэг"
     ],
-    highlight: false
+    highlight: false,
+    color: "from-blue-500/10 to-gold-500/10"
   },
   {
     name: "Growth Builder",
@@ -26,7 +27,8 @@ const plans = [
       "CRM холболт",
       "3 сарын дэмжлэг"
     ],
-    highlight: true
+    highlight: true,
+    color: "from-gold-500/20 to-gold-400/20"
   },
   {
     name: "Enterprise Architect",
@@ -39,7 +41,8 @@ const plans = [
       "Dedicated сервер",
       "Урт хугацааны хамтын ажиллагаа"
     ],
-    highlight: false
+    highlight: false,
+    color: "from-purple-500/10 to-gold-500/10"
   }
 ];
 
@@ -76,38 +79,45 @@ export default function Pricing() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -10 }}
-              className={`relative p-8 rounded-[32px] glass flex flex-col ${plan.highlight ? 'border-gold-500/50 glow-gold' : 'border-white/5'}`}
+              className={`group relative p-8 rounded-[32px] glass flex flex-col transition-all duration-500 ${plan.highlight ? 'border-gold-500/50 glow-gold' : 'border-white/5'}`}
             >
+              {/* Background Glow (Clipped by this container) */}
+              <div className="absolute inset-0 rounded-[32px] overflow-hidden pointer-events-none">
+                <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              </div>
+              
               {plan.highlight && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gold-500 text-navy-900 text-xs font-bold rounded-full flex items-center gap-1">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-gold-500 text-navy-900 text-xs font-bold rounded-full flex items-center gap-1 z-30 shadow-xl whitespace-nowrap">
                   <Zap className="w-3 h-3 fill-current" />
                   Хамгийн эрэлттэй
                 </div>
               )}
-              
-              <div className="mb-8">
-                <h3 className="text-2xl font-serif font-bold mb-2">{plan.name}</h3>
-                <div className="text-4xl font-bold text-gold-500 mb-4">{plan.price}</div>
-                <p className="text-white/50 text-sm leading-relaxed">
-                  {plan.description}
-                </p>
-              </div>
 
-              <div className="space-y-4 mb-10 flex-grow">
-                {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-3 text-sm text-white/80">
-                    <Check className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                    {feature}
-                  </div>
-                ))}
-              </div>
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="mb-8">
+                  <h3 className="text-2xl font-serif font-bold mb-2">{plan.name}</h3>
+                  <div className="text-4xl font-bold text-gold-500 mb-4">{plan.price}</div>
+                  <p className="text-white/50 text-sm leading-relaxed">
+                    {plan.description}
+                  </p>
+                </div>
 
-              <button 
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                className={`w-full py-4 rounded-2xl font-bold transition-all ${plan.highlight ? 'bg-gold-500 text-navy-900 hover:bg-gold-400' : 'glass hover:bg-white/10'}`}
-              >
-                Сонгох
-              </button>
+                <div className="space-y-4 mb-10 flex-grow">
+                  {plan.features.map((feature) => (
+                    <div key={feature} className="flex items-center gap-3 text-sm text-white/80">
+                      <Check className="w-5 h-5 text-gold-500 flex-shrink-0" />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+
+                <button 
+                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  className={`w-full py-4 rounded-2xl font-bold transition-all ${plan.highlight ? 'bg-gold-500 text-navy-900 hover:bg-gold-400' : 'glass hover:bg-white/10'}`}
+                >
+                  Сонгох
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>
