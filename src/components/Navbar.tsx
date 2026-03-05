@@ -1,15 +1,17 @@
 import { motion } from "motion/react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "../translations";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   const navLinks = [
-    { name: "Үйлчилгээ", href: "#services" },
-    { name: "Процесс", href: "#process" },
-    { name: "Кейс", href: "#cases" },
-    { name: "Үнэ", href: "#pricing" },
+    { name: t('nav_services'), href: "#services" },
+    { name: t('nav_process'), href: "#process" },
+    { name: t('nav_cases'), href: "#cases" },
+    { name: t('nav_pricing'), href: "#pricing" },
   ];
 
   return (
@@ -42,6 +44,26 @@ export default function Navbar() {
               {link.name}
             </motion.a>
           ))}
+          
+          {/* Language Switcher */}
+          <div className="flex items-center gap-2 border-l border-white/10 pl-8">
+            <button 
+              onClick={() => setLanguage('mn')}
+              className={`text-xs font-bold transition-all ${language === 'mn' ? 'text-gold-500 scale-110' : 'text-white/40 hover:text-white/60'}`}
+              title="Монгол"
+            >
+              MN
+            </button>
+            <span className="text-white/10 text-[10px]">|</span>
+            <button 
+              onClick={() => setLanguage('en')}
+              className={`text-xs font-bold transition-all ${language === 'en' ? 'text-gold-500 scale-110' : 'text-white/40 hover:text-white/60'}`}
+              title="English"
+            >
+              EN
+            </button>
+          </div>
+
           <motion.button
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -50,14 +72,24 @@ export default function Navbar() {
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="px-6 py-2.5 bg-gold-500 text-navy-900 rounded-full font-bold text-sm glow-gold hover:bg-gold-400 transition-colors"
           >
-            Төслөө эхлүүлэх
+            {t('nav_cta')}
           </motion.button>
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-white" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X /> : <Menu />}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setLanguage(language === 'mn' ? 'en' : 'mn')}
+              className="w-8 h-8 rounded-full glass flex items-center justify-center text-[10px] font-bold text-gold-500"
+            >
+              {language.toUpperCase()}
+            </button>
+          </div>
+          <button className="text-white" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -84,7 +116,7 @@ export default function Navbar() {
               setIsOpen(false);
             }}
           >
-            Төслөө эхлүүлэх
+            {t('nav_cta')}
           </button>
         </motion.div>
       )}

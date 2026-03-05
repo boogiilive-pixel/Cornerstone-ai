@@ -1,10 +1,9 @@
 import { motion } from "motion/react";
-import { Facebook, Twitter, Instagram, Linkedin, ArrowUp } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { useLanguage } from "../translations";
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const { t } = useLanguage();
 
   return (
     <footer className="py-20 bg-navy-900 border-t border-white/5 relative overflow-hidden">
@@ -35,13 +34,15 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-white/50 max-w-sm mb-8 leading-relaxed">
-              Бид таны бизнесийн зөв суурийг AI-тай хамт байгуулна. Өндөр гүйцэтгэлтэй веб сайт, апп болон стратегийн зөвлөх үйлчилгээ.
+              {t('hero_desc')}
             </p>
             <div className="flex gap-4">
               {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
                 <motion.a
                   key={i}
-                  href="#"
+                  href="https://www.facebook.com/cornerstoneai"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ y: -5, color: "#D4AF37" }}
                   className="w-10 h-10 rounded-full glass flex items-center justify-center text-white/70 transition-colors"
                 >
@@ -52,13 +53,13 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-lg font-serif font-bold mb-8">Цэс</h4>
+            <h4 className="text-lg font-serif font-bold mb-8">{t('footer_links')}</h4>
             <ul className="space-y-4">
               {[
-                { name: "Үйлчилгээ", href: "#services" },
-                { name: "Процесс", href: "#process" },
-                { name: "Кейс судалгаа", href: "#cases" },
-                { name: "Үнийн багц", href: "#pricing" }
+                { name: t('nav_services'), href: "#services" },
+                { name: t('nav_process'), href: "#process" },
+                { name: t('nav_cases'), href: "#cases" },
+                { name: t('nav_pricing'), href: "#pricing" }
               ].map((item) => (
                 <li key={item.name}>
                   <a href={item.href} className="text-white/50 hover:text-gold-500 transition-colors">{item.name}</a>
@@ -68,28 +69,19 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-lg font-serif font-bold mb-8">Холбоо барих</h4>
+            <h4 className="text-lg font-serif font-bold mb-8">{t('footer_contact')}</h4>
             <ul className="space-y-4">
               <li className="text-white/50">boogiilive@gmail.com</li>
               <li className="text-white/50">+976 9507-6599</li>
-              <li className="text-white/50">Улаанбаатар, Монгол Улс</li>
+              <li className="text-white/50">Ulaanbaatar, Mongolia</li>
             </ul>
           </div>
         </div>
 
         <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-white/30 text-sm">
-            © 2026 CornerstoneAI. Бүх эрх хуулиар хамгаалагдсан.
+            © {new Date().getFullYear()} CornerstoneAI. {t('footer_rights')}
           </p>
-          <button 
-            onClick={scrollToTop}
-            className="group flex items-center gap-2 text-sm font-bold text-white/50 hover:text-gold-500 transition-colors"
-          >
-            Дээшээ буцах
-            <div className="w-10 h-10 rounded-full glass flex items-center justify-center group-hover:bg-gold-500 group-hover:text-navy-900 transition-all">
-              <ArrowUp className="w-5 h-5" />
-            </div>
-          </button>
         </div>
       </div>
     </footer>

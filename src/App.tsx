@@ -13,7 +13,10 @@ import Pricing from "./components/Pricing";
 import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
+import FacebookChat from "./components/FacebookChat";
 import { motion, useScroll, useSpring } from "motion/react";
+import { LanguageProvider } from "./translations";
 
 export default function App() {
   const { scrollYProgress } = useScroll();
@@ -24,27 +27,31 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-navy-900 selection:bg-gold-500 selection:text-navy-900">
-      {/* Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gold-500 z-[100] origin-left"
-        style={{ scaleX }}
-      />
+    <LanguageProvider>
+      <div className="min-h-screen bg-navy-900 selection:bg-gold-500 selection:text-navy-900">
+        {/* Progress Bar */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-1 bg-gold-500 z-[100] origin-left"
+          style={{ scaleX }}
+        />
 
-      <Navbar />
-      
-      <main>
-        <Hero />
-        <Services />
-        <Process />
-        <CaseStudies />
-        <WhyUs />
-        <Pricing />
-        <Testimonials />
-        <Contact />
-      </main>
+        <Navbar />
+        
+        <main>
+          <Hero />
+          <Services />
+          <Process />
+          <CaseStudies />
+          <WhyUs />
+          <Pricing />
+          <Testimonials />
+          <Contact />
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+        <ScrollToTop />
+        <FacebookChat />
+      </div>
+    </LanguageProvider>
   );
 }

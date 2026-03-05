@@ -1,8 +1,10 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { ArrowRight, Calendar } from "lucide-react";
+import { useLanguage } from "../translations";
 
 export default function Hero() {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -39,18 +41,16 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-gold-500"></span>
             </span>
-            Built on the Right Foundation
+            {t('hero_title_1')} {t('hero_title_2')}
           </motion.div>
           
           <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[1.1] mb-8">
-            Бид таны бизнесийн <br />
-            <span className="text-gradient-gold">зөв суурийг</span> <br />
-            AI-тай хамт байгуулна
+            {t('hero_title_1')} <br />
+            <span className="text-gradient-gold">{t('hero_title_2')}</span>
           </h1>
           
           <p className="text-lg text-white/60 max-w-xl mb-10 leading-relaxed">
-            Өндөр гүйцэтгэлтэй веб сайт. Хэмжээгээ тэлэх апп. <br />
-            Өсөлт авчрах стратеги. Бид технологийн хүчийг таны бизнесийн амжилт болгон хувиргана.
+            {t('hero_desc')}
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -64,7 +64,7 @@ export default function Hero() {
                 whileHover={{ x: 5, y: -2 }}
                 className="px-8 py-4 bg-gold-500 text-navy-900 rounded-full font-bold flex items-center gap-2 glow-gold group"
               >
-                Төслөө эхлүүлэх
+                {t('nav_cta')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </motion.div>
@@ -80,7 +80,7 @@ export default function Hero() {
                 className="px-8 py-4 glass rounded-full font-bold flex items-center gap-2 hover:bg-white/10 transition-colors"
               >
                 <Calendar className="w-5 h-5 text-gold-500" />
-                Уулзалт товлох
+                {t('hero_cta')}
               </motion.button>
             </motion.div>
           </div>

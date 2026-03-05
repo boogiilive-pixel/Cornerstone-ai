@@ -1,34 +1,52 @@
 import { motion } from "motion/react";
-
-const steps = [
-  {
-    title: "Foundation Audit",
-    subtitle: "Оношлогоо",
-    description: "Таны бизнесийн одоогийн байдал болон хэрэгцээг нарийвчлан судална."
-  },
-  {
-    title: "Strategic Architecture",
-    subtitle: "Стратеги",
-    description: "Хамгийн оновчтой технологийн болон бизнесийн архитектурыг боловсруулна."
-  },
-  {
-    title: "Design & Build",
-    subtitle: "Хөгжүүлэлт",
-    description: "Premium дизайн болон өндөр гүйцэтгэлтэй кодчилол."
-  },
-  {
-    title: "AI Integration",
-    subtitle: "Интеграци",
-    description: "AI болон автоматжуулалтын системүүдийг бизнест тань нэвтрүүлнэ."
-  },
-  {
-    title: "Scale & Automate",
-    subtitle: "Өсөлт",
-    description: "Бизнесийн өсөлтийг дэмжиж, үйл ажиллагааг автоматжуулна."
-  }
-];
+import { useLanguage } from "../translations";
 
 export default function Process() {
+  const { t, language } = useLanguage();
+
+  const steps = [
+    {
+      title: "Foundation Audit",
+      subtitle: { mn: "Оношлогоо", en: "Diagnosis" },
+      description: { 
+        mn: "Таны бизнесийн одоогийн байдал болон хэрэгцээг нарийвчлан судална.", 
+        en: "We analyze your current business state and needs in detail." 
+      }
+    },
+    {
+      title: "Strategic Architecture",
+      subtitle: { mn: "Стратеги", en: "Strategy" },
+      description: { 
+        mn: "Хамгийн оновчтой технологийн болон бизнесийн архитектурыг боловсруулна.", 
+        en: "We develop the most optimal technological and business architecture." 
+      }
+    },
+    {
+      title: "Design & Build",
+      subtitle: { mn: "Хөгжүүлэлт", en: "Development" },
+      description: { 
+        mn: "Premium дизайн болон өндөр гүйцэтгэлтэй кодчилол.", 
+        en: "Premium design and high-performance coding." 
+      }
+    },
+    {
+      title: "AI Integration",
+      subtitle: { mn: "Интеграци", en: "Integration" },
+      description: { 
+        mn: "AI болон автоматжуулалтын системүүдийг бизнест тань нэвтрүүлнэ.", 
+        en: "Implement AI and automation systems into your business." 
+      }
+    },
+    {
+      title: "Scale & Automate",
+      subtitle: { mn: "Өсөлт", en: "Growth" },
+      description: { 
+        mn: "Бизнесийн өсөлтийг дэмжиж, үйл ажиллагааг автоматжуулна.", 
+        en: "Support business growth and automate operations." 
+      }
+    }
+  ];
+
   return (
     <section id="process" className="py-24 bg-navy-800/50 relative overflow-hidden">
       <div className="container mx-auto px-6">
@@ -39,7 +57,7 @@ export default function Process() {
             viewport={{ once: true }}
             className="text-4xl md:text-5xl font-serif font-bold mb-6"
           >
-            Бидний <span className="text-gradient-gold">Ажлын Процесс</span>
+            {language === 'mn' ? 'Бидний' : 'Our'} <span className="text-gradient-gold">{t('nav_process')}</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -48,7 +66,7 @@ export default function Process() {
             transition={{ delay: 0.1 }}
             className="text-white/60 text-lg max-w-2xl"
           >
-            Бид системтэй, үр дүнтэй арга барилаар таны төслийг амжилтанд хүргэдэг.
+            {language === 'mn' ? 'Бид системтэй, үр дүнтэй арга барилаар таны төслийг амжилтанд хүргэдэг.' : 'We lead your project to success with a systematic and effective approach.'}
           </motion.p>
         </div>
 
@@ -79,12 +97,12 @@ export default function Process() {
 
                 <div className="text-center lg:text-left">
                   <span className="text-gold-500 font-mono text-xs font-bold tracking-widest uppercase mb-2 block">
-                    Step 0{i + 1}
+                    {language === 'mn' ? 'Алхам' : 'Step'} 0{i + 1}
                   </span>
                   <h3 className="text-xl font-serif font-bold mb-2">{step.title}</h3>
-                  <p className="text-gold-500/80 text-sm font-medium mb-4 italic">{step.subtitle}</p>
+                  <p className="text-gold-500/80 text-sm font-medium mb-4 italic">{step.subtitle[language]}</p>
                   <p className="text-white/50 text-sm leading-relaxed">
-                    {step.description}
+                    {step.description[language]}
                   </p>
                 </div>
               </motion.div>

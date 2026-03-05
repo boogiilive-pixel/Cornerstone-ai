@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Send, Phone, Mail, MapPin, CheckCircle2 } from "lucide-react";
 import { useState, FormEvent } from "react";
+import { useLanguage } from "../translations";
 
 export default function Contact() {
+  const { t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
-
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -30,11 +31,11 @@ export default function Contact() {
         setSubmitted(true);
         setTimeout(() => setSubmitted(false), 8000);
       } else {
-        alert("Илгээхэд алдаа гарлаа. Дахин оролдоно уу.");
+        alert(t('contact_error'));
       }
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Сүлжээний алдаа гарлаа.");
+      alert(t('contact_network_error'));
     } finally {
       setLoading(false);
     }
@@ -51,11 +52,11 @@ export default function Contact() {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-serif font-bold mb-8"
             >
-              Бат бөх зүйл <br />
-              <span className="text-gradient-gold">хамтдаа байгуулцгаая</span>
+              {t('contact_title')} <br />
+              <span className="text-gradient-gold">{t('contact_title_accent')}</span>
             </motion.h2>
             <p className="text-white/60 text-lg mb-12 max-w-md">
-              Таны төслийн талаар ярилцахад бид бэлэн байна. Доорх формыг бөглөж эсвэл шууд холбогдоорой.
+              {t('contact_desc')}
             </p>
 
             <div className="space-y-6">
@@ -64,7 +65,7 @@ export default function Contact() {
                   <Phone className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/50">Утас</p>
+                  <p className="text-sm text-white/50">{t('contact_phone')}</p>
                   <p className="font-bold">+976 9507-6599</p>
                 </div>
               </div>
@@ -73,7 +74,7 @@ export default function Contact() {
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/50">И-мэйл</p>
+                  <p className="text-sm text-white/50">{t('contact_email')}</p>
                   <p className="font-bold">boogiilive@gmail.com</p>
                 </div>
               </div>
@@ -82,8 +83,8 @@ export default function Contact() {
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/50">Хаяг</p>
-                  <p className="font-bold">Улаанбаатар, Монгол Улс</p>
+                  <p className="text-sm text-white/50">{t('contact_address')}</p>
+                  <p className="font-bold">Ulaanbaatar, Mongolia</p>
                 </div>
               </div>
             </div>
@@ -107,51 +108,43 @@ export default function Contact() {
                 >
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">Нэр</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">{t('contact_name')}</label>
                       <input 
                         required
                         name="name"
                         type="text" 
-                        placeholder="Таны нэр"
-                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Энэ талбарыг бөглөнө үү')}
-                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
+                        placeholder={t('contact_name')}
                         className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:border-gold-500 outline-none transition-colors"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">Утас</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">{t('contact_phone')}</label>
                       <input 
                         required
                         name="phone"
                         type="text" 
-                        placeholder="Холбоо барих утас"
-                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Энэ талбарыг бөглөнө үү')}
-                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
+                        placeholder={t('contact_phone')}
                         className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:border-gold-500 outline-none transition-colors"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">И-мэйл</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">{t('contact_email_label')}</label>
                     <input 
                       required
                       name="email"
                       type="email" 
-                      placeholder="И-мэйл хаяг"
-                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Энэ талбарыг бөглөнө үү')}
-                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
+                      placeholder={t('contact_email_label')}
                       className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:border-gold-500 outline-none transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">Мессеж</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/50 ml-1">{t('contact_message')}</label>
                     <textarea 
                       required
                       name="message"
                       rows={4}
-                      placeholder="Төслийн талаарх товч мэдээлэл"
-                      onInvalid={(e) => (e.target as HTMLTextAreaElement).setCustomValidity('Энэ талбарыг бөглөнө үү')}
-                      onInput={(e) => (e.target as HTMLTextAreaElement).setCustomValidity('')}
+                      placeholder={t('contact_message_placeholder')}
                       className="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:border-gold-500 outline-none transition-colors resize-none"
                     ></textarea>
                   </div>
@@ -160,7 +153,7 @@ export default function Contact() {
                     disabled={loading}
                     className="w-full py-5 bg-gold-500 text-navy-900 rounded-2xl font-bold flex items-center justify-center gap-3 glow-gold hover:bg-gold-400 transition-all group disabled:opacity-50"
                   >
-                    {loading ? "Илгээж байна..." : "Илгээх"}
+                    {loading ? t('contact_sending') : t('contact_send')}
                     {!loading && <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
                   </button>
                 </motion.form>
@@ -174,13 +167,13 @@ export default function Contact() {
                   <div className="w-20 h-20 bg-gold-500/20 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-10 h-10 text-gold-500" />
                   </div>
-                  <h3 className="text-2xl font-serif font-bold">Амжилттай илгээгдлээ!</h3>
-                  <p className="text-white/60">Бид тантай тун удахгүй холбогдох болно.</p>
+                  <h3 className="text-2xl font-serif font-bold">{t('contact_success_title')}</h3>
+                  <p className="text-white/60">{t('contact_success_desc')}</p>
                   <button 
                     onClick={() => setSubmitted(false)}
                     className="text-gold-500 font-bold text-sm underline underline-offset-4"
                   >
-                    Дахин илгээх
+                    {t('contact_resend')}
                   </button>
                 </motion.div>
               )}
