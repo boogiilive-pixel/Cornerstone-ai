@@ -13,7 +13,7 @@ export default function FacebookChat() {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#0084FF] text-white rounded-full flex items-center justify-center shadow-lg glow-gold cursor-pointer"
+      className="fixed bottom-6 right-8 z-50 w-14 h-14 bg-[#0084FF] text-white rounded-full flex items-center justify-center shadow-lg glow-gold cursor-pointer"
       title="Message us on Messenger"
     >
       <MessageCircle className="w-7 h-7" />
