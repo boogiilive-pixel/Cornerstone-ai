@@ -130,7 +130,7 @@ export default function CaseStudies() {
                 <img 
                   src={item.image} 
                   alt={item.title[language]}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
