@@ -42,14 +42,14 @@ export default function CaseStudies() {
       size: "md"
     },
     {
-      title: { mn: "E-Commerce Платформ", en: "E-Commerce Platform" },
-      result: { mn: "Web Design", en: "Web Design" },
+      title: { mn: "Sorilt.com - Бүх төрлийн Сэтгэлзүйн тестүүд", en: "Sorilt.com - All Types of Psychological Tests" },
+      result: { mn: "Web System", en: "Web System" },
       description: { 
-        mn: "Орчин үеийн онлайн дэлгүүрийн цогц шийдэл.", 
-        en: "Comprehensive modern online store solution." 
+        mn: "Бүх төрлийн шалгалт, сорилтыг онлайнаар авах цогц систем.", 
+        en: "Comprehensive system for taking all types of exams and tests online." 
       },
-      image: "https://picsum.photos/seed/ecommerce/800/1200",
-      link: "#",
+      image: "https://lh3.googleusercontent.com/d/1LW9HuOVmm2uxIHK1CHRwA-zsSSD-uLoy",
+      link: "https://sorilt.com/",
       size: "md"
     },
     {
