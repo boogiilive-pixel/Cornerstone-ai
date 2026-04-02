@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "../translations";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ export default function Navbar() {
     { name: t('nav_process'), href: "#process" },
     { name: t('nav_cases'), href: "#cases" },
     { name: t('nav_pricing'), href: "#pricing" },
+    { name: "Digital Card", href: "/namecard" },
   ];
 
   return (
@@ -33,16 +35,32 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link, i) => (
-            <motion.a
-              key={link.name}
-              href={link.href}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="text-sm font-medium text-white/70 hover:text-gold-500 transition-colors"
-            >
-              {link.name}
-            </motion.a>
+            link.href.startsWith('/') ? (
+              <motion.div
+                key={link.name}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Link
+                  to={link.href}
+                  className="text-sm font-medium text-white/70 hover:text-gold-500 transition-colors"
+                >
+                  {link.name}
+                </Link>
+              </motion.div>
+            ) : (
+              <motion.a
+                key={link.name}
+                href={link.href}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="text-sm font-medium text-white/70 hover:text-gold-500 transition-colors"
+              >
+                {link.name}
+              </motion.a>
+            )
           ))}
           
           {/* Language Switcher */}
@@ -100,14 +118,25 @@ export default function Navbar() {
           className="md:hidden glass border-t border-white/5 px-6 py-8 flex flex-col gap-6"
         >
           {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href} 
-              className="text-lg font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              {link.name}
-            </a>
+            link.href.startsWith('/') ? (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="text-lg font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ) : (
+              <a 
+                key={link.name} 
+                href={link.href} 
+                className="text-lg font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.name}
+              </a>
+            )
           ))}
           <button 
             className="w-full py-4 bg-gold-500 text-navy-900 rounded-xl font-bold"

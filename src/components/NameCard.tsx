@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 export default function NameCard() {
   const particlesRef = useRef<HTMLDivElement>(null);
@@ -385,6 +387,14 @@ export default function NameCard() {
       <div className={`toast ${toast.show ? 'show' : ''}`}>{toast.msg}</div>
 
       <div className="scene">
+        <Link 
+          to="/" 
+          className="absolute top-8 left-8 flex items-center gap-2 text-white/40 hover:text-gold-500 transition-colors text-xs font-mono uppercase tracking-widest z-50"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Вэбрүү буцах
+        </Link>
+
         <div className="card" ref={cardRef}>
           <div className="card-front">
             <div className="card-shine"></div>
