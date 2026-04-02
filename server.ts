@@ -59,27 +59,9 @@ async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "custom",
+      appType: "spa",
     });
     app.use(vite.middlewares);
-    
-    app.use("*", async (req, res, next) => {
-      const url = req.originalUrl;
-      if (url.startsWith('/api')) return next();
-      
-      try {
-        const templatePath = path.join(process.cwd(), "index.html");
-        if (!fs.existsSync(templatePath)) return next();
-        
-        let template = fs.readFileSync(templatePath, "utf-8");
-        template = await vite.transformIndexHtml(url, template);
-        res.status(200).set({ "Content-Type": "text/html" }).end(template);
-      } catch (e) {
-        vite.ssrFixStacktrace(e as Error);
-        console.error("Vite SPA Fallback Error:", e);
-        next(e);
-      }
-    });
   } else {
     app.use(express.static("dist"));
     app.get("*", (req, res) => {
