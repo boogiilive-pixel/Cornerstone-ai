@@ -59,23 +59,18 @@ async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "spa",
+      appType: "custom",
     });
     app.use(vite.middlewares);
     
-    // Catch-all for SPA in development
-    app.get("*", async (req, res, next) => {
+    app.use("*", async (req, res, next) => {
       const url = req.originalUrl;
       if (url.startsWith('/api')) return next();
       
-      // Skip files with extensions that should have been handled by Vite
-      if (path.extname(url)) return next();
-
       try {
-        const templatePath = path.resolve(__dirname, "index.html");
-        if (!fs.existsSync(templatePath)) {
-          return next();
-        }
+        const templatePath = path.join(process.cwd(), "index.html");
+        if (!fs.existsSync(templatePath)) return next();
+        
         let template = fs.readFileSync(templatePath, "utf-8");
         template = await vite.transformIndexHtml(url, template);
         res.status(200).set({ "Content-Type": "text/html" }).end(template);
@@ -97,4 +92,7 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer().catch(err => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});
