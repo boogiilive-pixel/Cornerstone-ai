@@ -62,7 +62,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout />} />
-          <Route path="/namecard" element={<NameCard />} />
+          <Route path="/digitalcard" element={<NameCard />} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>

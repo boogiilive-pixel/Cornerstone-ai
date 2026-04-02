@@ -25,7 +25,7 @@ export default function NameCard() {
       const canvas = qrCanvasRef.current;
       const ctx = canvas.getContext('2d');
       const size = 42;
-      const url = 'https://cornerstoneai.dev/namecard';
+      const url = 'https://cornerstoneai.dev/digitalcard';
       
       if (ctx) {
         ctx.clearRect(0, 0, size, size);
@@ -494,7 +494,7 @@ export default function NameCard() {
           </button>
         </div>
 
-        <div className="footer-hint">cornerstoneai.dev/namecard</div>
+        <div className="footer-hint">cornerstoneai.dev/digitalcard</div>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export default function Navbar() {
     { name: t('nav_process'), href: "#process" },
     { name: t('nav_cases'), href: "#cases" },
     { name: t('nav_pricing'), href: "#pricing" },
-    { name: "Digital Card", href: "/namecard" },
+    { name: "Digital Card", href: "/digitalcard" },
   ];
 
   return (
