@@ -386,15 +386,15 @@ export default function NameCard() {
       <div className="particles" ref={particlesRef}></div>
       <div className={`toast ${toast.show ? 'show' : ''}`}>{toast.msg}</div>
 
-      <div className="scene">
-        <Link 
-          to="/" 
-          className="absolute top-8 left-8 flex items-center gap-2 text-white/40 hover:text-gold-500 transition-colors text-xs font-mono uppercase tracking-widest z-50"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Вэбрүү буцах
-        </Link>
+      <Link 
+        to="/" 
+        className="fixed top-6 left-6 flex items-center gap-2 text-white/40 hover:text-gold-500 transition-colors text-xs font-mono uppercase tracking-widest z-[100]"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Вэбрүү буцах
+      </Link>
 
+      <div className="scene">
         <div className="card" ref={cardRef}>
           <div className="card-front">
             <div className="card-shine"></div>

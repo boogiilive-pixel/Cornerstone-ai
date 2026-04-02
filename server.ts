@@ -65,11 +65,13 @@ async function startServer() {
     
     // Catch-all for SPA in development
     app.get("*", async (req, res, next) => {
-      if (req.url.startsWith('/api')) return next();
+      const url = req.originalUrl;
+      if (url.startsWith('/api')) return next();
       try {
-        const template = fs.readFileSync(path.resolve(__dirname, "index.html"), "utf-8");
-        const html = await vite.transformIndexHtml(req.url, template);
-        res.status(200).set({ "Content-Type": "text/html" }).end(html);
+        const templatePath = path.join(process.cwd(), "index.html");
+        let template = fs.readFileSync(templatePath, "utf-8");
+        template = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(template);
       } catch (e) {
         vite.ssrFixStacktrace(e as Error);
         next(e);
