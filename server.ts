@@ -64,37 +64,34 @@ async function startServer() {
     
     app.use(vite.middlewares);
     
-    app.get("*", async (req, res, next) => {
-      const url = req.originalUrl;
-      
-      // Ignore API and static assets with extensions
-      if (url.startsWith('/api') || path.extname(url)) {
+    // Catch-all for SPA in development
+    app.use(async (req, res, next) => {
+      if (req.method !== 'GET' || (req.headers.accept && !req.headers.accept.includes('text/html'))) {
         return next();
       }
-
-      console.log(`[SPA Fallback] Handling request for: ${url}`);
       
+      const url = req.originalUrl;
+      if (url.startsWith('/api')) return next();
+
       try {
-        const templatePath = path.resolve(__dirname, "index.html");
-        if (!fs.existsSync(templatePath)) {
-          console.error(`[SPA Fallback] index.html not found at: ${templatePath}`);
-          return next();
-        }
+        const templatePath = path.join(process.cwd(), "index.html");
+        if (!fs.existsSync(templatePath)) return next();
 
         let template = fs.readFileSync(templatePath, "utf-8");
         template = await vite.transformIndexHtml(url, template);
-        
         res.status(200).set({ "Content-Type": "text/html" }).end(template);
       } catch (e) {
-        vite.ssrFixStacktrace(e as Error);
-        console.error(`[SPA Fallback] Error processing ${url}:`, e);
+        if (process.env.NODE_ENV !== "production") {
+          vite.ssrFixStacktrace(e as Error);
+        }
         next(e);
       }
     });
   } else {
-    app.use(express.static("dist"));
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
     app.get("*", (req, res) => {
-      res.sendFile("dist/index.html", { root: "." });
+      res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
