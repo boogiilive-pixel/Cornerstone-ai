@@ -59,9 +59,38 @@ async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "spa",
+      appType: "custom",
     });
+    
     app.use(vite.middlewares);
+    
+    app.get("*", async (req, res, next) => {
+      const url = req.originalUrl;
+      
+      // Ignore API and static assets with extensions
+      if (url.startsWith('/api') || path.extname(url)) {
+        return next();
+      }
+
+      console.log(`[SPA Fallback] Handling request for: ${url}`);
+      
+      try {
+        const templatePath = path.resolve(__dirname, "index.html");
+        if (!fs.existsSync(templatePath)) {
+          console.error(`[SPA Fallback] index.html not found at: ${templatePath}`);
+          return next();
+        }
+
+        let template = fs.readFileSync(templatePath, "utf-8");
+        template = await vite.transformIndexHtml(url, template);
+        
+        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        console.error(`[SPA Fallback] Error processing ${url}:`, e);
+        next(e);
+      }
+    });
   } else {
     app.use(express.static("dist"));
     app.get("*", (req, res) => {
