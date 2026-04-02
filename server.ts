@@ -67,13 +67,21 @@ async function startServer() {
     app.get("*", async (req, res, next) => {
       const url = req.originalUrl;
       if (url.startsWith('/api')) return next();
+      
+      // Skip files with extensions that should have been handled by Vite
+      if (path.extname(url)) return next();
+
       try {
-        const templatePath = path.join(process.cwd(), "index.html");
+        const templatePath = path.resolve(__dirname, "index.html");
+        if (!fs.existsSync(templatePath)) {
+          return next();
+        }
         let template = fs.readFileSync(templatePath, "utf-8");
         template = await vite.transformIndexHtml(url, template);
         res.status(200).set({ "Content-Type": "text/html" }).end(template);
       } catch (e) {
         vite.ssrFixStacktrace(e as Error);
+        console.error("Vite SPA Fallback Error:", e);
         next(e);
       }
     });
