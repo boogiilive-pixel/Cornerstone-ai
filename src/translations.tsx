@@ -18,8 +18,8 @@ export const translations: Translations = {
   nav_cta: { mn: "Төслөө эхлүүлэх", en: "Start Project" },
 
   // Hero
-  hero_title_1: { mn: "Зөв суурин дээр", en: "Built on the" },
-  hero_title_2: { mn: "барьсан ирээдүй", en: "Right Foundation" },
+  hero_title_1: { mn: "Оюун ухаанд тулгуурласан.", en: "Built on Intelligence." },
+  hero_title_2: { mn: "Үр дүнд чиглэсэн.", en: "Driven by Results." },
   hero_desc: { mn: "AI-д суурилсан вэб хөгжүүлэлт, апп болон бизнесийн стратеги. Бид таны бизнесийг дижитал ертөнцөд хамгийн бат бөх суурьтайгаар босгоно.", en: "AI-powered web development, apps, and business strategy. We build your business on the most solid foundation in the digital world." },
   hero_cta: { mn: "Үнэгүй зөвлөгөө авах", en: "Get Free Consultation" },
   hero_stats_clients: { mn: "Сэтгэл ханамжтай харилцагчид", en: "Happy Clients" },

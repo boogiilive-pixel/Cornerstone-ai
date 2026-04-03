@@ -409,10 +409,10 @@ export default function NameCard() {
             </div>
 
             <div className="card-name">
-              <div className="card-name-prefix">Founder & CEO</div>
+              <div className="card-name-prefix">Built on Intelligence — Driven by Results</div>
               <h1>L.<strong>Bolor-Erdene</strong></h1>
             </div>
-            <div className="card-title-role">Founder <span>·</span> Chief Executive Officer</div>
+            <div className="card-title-role">Founder <span>·</span> CEO</div>
 
             <div className="card-divider"></div>
 
@@ -469,7 +469,7 @@ export default function NameCard() {
             </div>
 
             <div className="card-bottom">
-              <div className="card-tagline">Build on Intelligence</div>
+              <div className="card-tagline">Built on Intelligence. Driven by Results.</div>
               <div className="qr-wrap">
                 <canvas ref={qrCanvasRef} width="42" height="42"></canvas>
               </div>
