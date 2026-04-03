@@ -3,6 +3,7 @@ import { Menu, X, Globe } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "../translations";
 import { Link } from "react-router-dom";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,14 +23,8 @@ export default function Navbar() {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2"
         >
-          <div className="w-10 h-10 bg-gold-500 rounded-lg flex items-center justify-center font-bold text-navy-900 text-xl">
-            C
-          </div>
-          <span className="text-2xl font-serif font-bold tracking-tight">
-            Cornerstone<span className="text-gold-500">AI</span>
-          </span>
+          <Logo iconSize="w-8 h-8" textSize="text-2xl" />
         </motion.div>
 
         {/* Desktop Nav */}

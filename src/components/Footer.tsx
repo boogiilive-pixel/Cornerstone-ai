@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useLanguage } from "../translations";
+import Logo from "./Logo";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -25,14 +26,7 @@ export default function Footer() {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-4 gap-12 mb-20">
           <div className="col-span-2">
-            <div className="flex items-center gap-2 mb-8">
-              <div className="w-10 h-10 bg-gold-500 rounded-lg flex items-center justify-center font-bold text-navy-900 text-xl">
-                C
-              </div>
-              <span className="text-2xl font-serif font-bold tracking-tight">
-                Cornerstone<span className="text-gold-500">AI</span>
-              </span>
-            </div>
+            <Logo className="mb-8" iconSize="w-8 h-8" textSize="text-2xl" />
             <p className="text-white/50 max-w-sm mb-8 leading-relaxed">
               {t('hero_desc')}
             </p>
@@ -74,6 +68,15 @@ export default function Footer() {
               <li className="text-white/50">boogiilive@gmail.com</li>
               <li className="text-white/50">+976 9507-6599</li>
               <li className="text-white/50">Ulaanbaatar, Mongolia</li>
+              <li className="pt-2">
+                <a 
+                  href="/digitalcard" 
+                  className="text-gold-500/80 hover:text-gold-500 text-sm font-medium transition-colors flex items-center gap-2 group"
+                >
+                  Digital Card
+                  <span className="w-4 h-px bg-gold-500/30 group-hover:w-6 transition-all"></span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>

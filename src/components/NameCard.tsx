@@ -221,14 +221,10 @@ export default function NameCard() {
         }
         .logo-sq {
           border-radius: 2px; background: #C8A96E;
-          animation: pulse-sq 3s ease-in-out infinite;
         }
-        .logo-sq:nth-child(2) { opacity: 0.5; animation-delay: 0.3s; }
-        .logo-sq:nth-child(3) { opacity: 0.5; animation-delay: 0.15s; }
-        .logo-sq:nth-child(4) { opacity: 0.2; animation-delay: 0.45s; }
-        @keyframes pulse-sq {
-          0%,100% { opacity: inherit; } 50% { opacity: 0.9; }
-        }
+        .logo-sq:nth-child(2) { opacity: 0.6; }
+        .logo-sq:nth-child(3) { opacity: 0.4; }
+        .logo-sq:nth-child(4) { opacity: 0.2; }
         .card-logo-text {
           font-family: 'Cormorant Garamond', serif;
           font-size: 14px; font-weight: 600;
