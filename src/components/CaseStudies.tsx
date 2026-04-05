@@ -189,7 +189,7 @@ export default function CaseStudies() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: i * 0.05 }}
-                className="group bg-[#0F1729] rounded-xl overflow-hidden border border-white/5 hover:border-[#C49A3C]/30 hover:shadow-[0_0_20px_rgba(196,154,60,0.1)] transition-all duration-500 hover:-translate-y-1"
+                className="group bg-[#0F1729] rounded-xl overflow-hidden border border-white/5 hover:border-[#C49A3C]/30 transition-all duration-500 hover:-translate-y-1"
               >
                 {/* Thumbnail */}
                 <div className="aspect-[16/10] overflow-hidden relative">
@@ -199,7 +199,7 @@ export default function CaseStudies() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
+                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors duration-500" />
                 </div>
 
                 {/* Card Content */}
