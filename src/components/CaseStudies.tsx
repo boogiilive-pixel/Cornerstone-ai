@@ -1,218 +1,260 @@
 import { motion, AnimatePresence } from "motion/react";
-import { ExternalLink, ChevronDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "../translations";
 
+type Category = "All" | "AI" | "Mobile" | "Website" | "Platform";
+
 export default function CaseStudies() {
   const { t, language } = useLanguage();
+  const [activeFilter, setActiveFilter] = useState<Category>("All");
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const filters: { label: string; value: Category }[] = [
+    { label: language === 'mn' ? "Бүгд" : "All", value: "All" },
+    { label: language === 'mn' ? "AI Платформ" : "AI Platform", value: "AI" },
+    { label: language === 'mn' ? "Мобайл" : "Mobile", value: "Mobile" },
+    { label: language === 'mn' ? "Вэбсайт" : "Website", value: "Website" }
+  ];
 
   const cases = [
     {
       id: 1,
+      category: "AI",
       title: { mn: "Мэргэжлээ сонгох бүрэн автомат систем", en: "Fully Automated Career Selection System" },
-      result: { mn: "AI Платформ", en: "AI Platform" },
       description: { 
         mn: "Мэргэжил сонголтын ухаалаг зөвлөх систем болон бүрэн автоматжуулсан процесс.", 
         en: "Intelligent career advisory system and fully automated process." 
       },
       image: "https://lh3.googleusercontent.com/d/1E56NBG6aF2eI87IP9WYDhvetefmxpCs-",
-      link: "https://mergejil.com/"
+      link: "https://mergejil.com/",
+      stack: ["AI", "Python", "React"]
     },
     {
       id: 2,
+      category: "Mobile",
       title: { mn: "Хувь хүний хөгжлийн бүрэн автомат апп", en: "Personal Development Automation App" },
-      result: { mn: "Mobile App", en: "Mobile App" },
       description: { 
         mn: "Хувь хүний хөгжил, сэтгэл зүйн цогц платформ болон автоматжуулсан систем.", 
         en: "Comprehensive personal development and psychology platform." 
       },
       image: "https://lh3.googleusercontent.com/d/15tCUAVrMqRf5PWrZa-W3SVeXzet6AgyH",
-      link: "https://www.mongolmind.com/"
+      link: "https://www.mongolmind.com/",
+      stack: ["Flutter", "Firebase"]
     },
     {
       id: 3,
+      category: "Website",
       title: { mn: "Вэбсайт /Админ панел/", en: "Website /Admin Panel/" },
-      result: { mn: "Web System", en: "Web System" },
       description: { 
         mn: "Мэдээ мэдээллийн нэгдсэн портал болон удирдлагын админ систем.", 
         en: "Integrated news portal and administrative management system." 
       },
       image: "https://lh3.googleusercontent.com/d/1URIvBZXdwF8Da3f24K4AN5TPFMANjQ8d",
-      link: "https://ilchlelt.com/"
+      link: "https://ilchlelt.com/",
+      stack: ["Next.js", "Tailwind"]
     },
     {
       id: 4,
+      category: "Website",
       title: { mn: "Sorilt.com - Сэтгэлзүйн тестүүд", en: "Sorilt.com - Psych Tests" },
-      result: { mn: "Web System", en: "Web System" },
       description: { 
         mn: "Бүх төрлийн шалгалт, сорилтыг онлайнаар авах цогц систем.", 
         en: "Comprehensive system for taking all types of exams and tests online." 
       },
       image: "https://lh3.googleusercontent.com/d/1LW9HuOVmm2uxIHK1CHRwA-zsSSD-uLoy",
-      link: "https://sorilt.com/"
+      link: "https://sorilt.com/",
+      stack: ["React", "Node.js"]
     },
     {
       id: 5,
+      category: "Platform",
       title: { mn: "Бизнес Дата Аналитик", en: "Business Data Analytics" },
-      result: { mn: "Dashboard", en: "Dashboard" },
       description: { 
         mn: "Бизнесийн шийдвэр гаргалтад туслах дата визуалчлалын систем.", 
         en: "Data visualization system to assist in business decision making." 
       },
       image: "https://picsum.photos/seed/dashboard/800/1200",
-      link: "#"
+      link: "#",
+      stack: ["D3.js", "Python"]
     },
     {
       id: 6,
+      category: "AI",
       title: { mn: "AI Сошиал Платформ", en: "AI Social Platform" },
-      result: { mn: "Social Web", en: "Social Web" },
       description: { 
         mn: "AI-д суурилсан шинэ үеийн сошиал медиа платформ.", 
         en: "Next-generation AI-powered social media platform." 
       },
       image: "https://picsum.photos/seed/social-media/800/1200",
-      link: "#"
+      link: "#",
+      stack: ["PyTorch", "React"]
     },
     {
       id: 7,
+      category: "Mobile",
       title: { mn: "Фитнесс Трэкэр Апп", en: "Fitness Tracker App" },
-      result: { mn: "Mobile UI", en: "Mobile UI" },
       description: { 
         mn: "Хэрэглэгчийн идэвх хянах ухаалаг гар утасны аппликейшн.", 
         en: "Smart mobile application for tracking user activity." 
       },
       image: "https://picsum.photos/seed/fitness-app/800/1200",
-      link: "#"
+      link: "#",
+      stack: ["Swift", "HealthKit"]
     }
   ];
 
-  const visibleCases = isExpanded ? cases : cases.slice(0, 6);
+  const filteredCases = activeFilter === "All" 
+    ? cases 
+    : cases.filter(c => c.category === activeFilter);
+
+  const visibleCases = isExpanded ? filteredCases : filteredCases.slice(0, 6);
+
+  const getTagStyles = (category: string) => {
+    switch (category) {
+      case "AI":
+        return "bg-[#1A2744] text-[#5B8FD4] border-[rgba(91,143,212,0.3)]";
+      case "Mobile":
+        return "bg-[#0F2018] text-[#4CAF7D] border-[rgba(76,175,125,0.3)]";
+      case "Website":
+        return "bg-[#231A0A] text-[#C49A3C] border-[rgba(196,154,60,0.3)]";
+      case "Platform":
+        return "bg-[#1E1230] text-[#9B7FD4] border-[rgba(155,127,212,0.3)]";
+      default:
+        return "bg-white/5 text-white/50 border-white/10";
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    if (language === 'en') return category;
+    switch (category) {
+      case "AI": return "AI Платформ";
+      case "Mobile": return "Мобайл апп";
+      case "Website": return "Вэбсайт";
+      case "Platform": return "Платформ";
+      default: return category;
+    }
+  };
 
   return (
-    <section id="cases" className="py-32 relative overflow-hidden">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold-500/5 rounded-full blur-[120px] pointer-events-none" />
-
+    <section id="cases" className="py-32 bg-[#0A0F1E] relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-3xl mb-20">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center gap-3 mb-6"
-          >
-            <div className="h-px w-12 bg-gold-500/50" />
-            <span className="text-gold-500 font-bold tracking-[0.2em] text-xs uppercase">
-              {language === 'mn' ? 'Бидний амжилт' : 'Our Success'}
-            </span>
-          </motion.div>
-          
+        {/* Section Heading */}
+        <div className="mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl font-serif font-bold mb-8 leading-tight"
+            className="text-5xl md:text-6xl font-serif font-bold mb-12"
           >
-            {t('cases_title')} <span className="text-gradient-gold italic">{t('cases_title_accent')}</span>
+            <span className="text-white">Хийгдсэн</span>{" "}
+            <span className="text-[#C49A3C] italic font-normal">ажлууд</span>
           </motion.h2>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-white/50 text-xl leading-relaxed font-light"
-          >
-            {t('cases_desc')}
-          </motion.p>
+
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap gap-x-8 gap-y-4 border-b border-white/5 pb-4">
+            {filters.map((filter) => (
+              <button
+                key={filter.value}
+                onClick={() => {
+                  setActiveFilter(filter.value);
+                  setIsExpanded(false);
+                }}
+                className={`text-sm font-medium transition-all relative pb-4 ${
+                  activeFilter === filter.value 
+                    ? "text-[#C49A3C]" 
+                    : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                {filter.label}
+                {activeFilter === filter.value && (
+                  <motion.div 
+                    layoutId="activeFilter"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C49A3C]"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
 
+        {/* Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {visibleCases.map((item, i) => (
               <motion.div
                 key={item.id}
                 layout
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                viewport={{ once: true }}
-                transition={{ 
-                  delay: i * 0.1,
-                  duration: 0.6,
-                  ease: [0.23, 1, 0.32, 1]
-                }}
-                className="group relative rounded-3xl overflow-hidden border border-white/5 bg-navy-800/30 aspect-[4/5]"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: i * 0.05 }}
+                className="group bg-[#0F1729] rounded-xl overflow-hidden border border-white/5 hover:border-[#C49A3C]/30 hover:shadow-[0_0_20px_rgba(196,154,60,0.1)] transition-all duration-500 hover:-translate-y-1"
               >
-                {/* Image Container */}
-                <div className="absolute inset-0 w-full h-full overflow-hidden">
+                {/* Thumbnail */}
+                <div className="aspect-[16/10] overflow-hidden relative">
                   <motion.img 
                     src={item.image} 
                     alt={item.title[language]}
-                    className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-navy-950/60 group-hover:bg-navy-950/20 transition-colors duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-transparent opacity-90" />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
                 </div>
 
-                {/* Content Overlay - Black Gradient */}
-                <div className="absolute inset-x-0 bottom-0 h-32 group-hover:h-3/4 bg-gradient-to-t from-black via-black/80 to-transparent transition-all duration-700 ease-in-out" />
-                
-                <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                  <div className="relative z-20">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="px-2.5 py-0.5 bg-gold-500/10 border border-gold-500/20 text-gold-500 text-[9px] font-bold rounded-full uppercase tracking-widest">
-                        {item.result[language]}
-                      </span>
-                    </div>
+                {/* Card Content */}
+                <div className="p-6">
+                  <div className="flex mb-4">
+                    <span className={`text-[10px] uppercase tracking-[0.08em] font-bold px-3 py-1 rounded-full border ${getTagStyles(item.category)}`}>
+                      {getCategoryLabel(item.category)}
+                    </span>
+                  </div>
 
-                    <h3 className="text-xl font-serif font-bold mb-3 leading-tight group-hover:text-gold-500 transition-colors duration-300">
-                      {item.title[language]}
-                    </h3>
+                  <h3 className="text-[17px] font-semibold text-white mb-3 leading-tight">
+                    {item.title[language]}
+                  </h3>
 
-                    <div className="overflow-hidden max-h-0 group-hover:max-h-48 transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100">
-                      <p className="text-white/50 text-xs mb-5 leading-relaxed line-clamp-3">
-                        {item.description[language]}
-                      </p>
-                      <a 
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-gold-500 font-bold text-[10px] uppercase tracking-widest hover:text-white transition-colors duration-300"
-                      >
-                        {t('cases_view_live')} 
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </a>
+                  <p className="text-[14px] text-[#8B9AB5] leading-[1.7] mb-6 line-clamp-2">
+                    {item.description[language]}
+                  </p>
+
+                  {/* Footer Row */}
+                  <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <div className="flex flex-wrap gap-2">
+                      {item.stack.map(tech => (
+                        <span key={tech} className="bg-white/5 text-[#6B7A99] px-2 py-0.5 rounded-[4px] text-[11px] border border-white/5">
+                          {tech}
+                        </span>
+                      ))}
                     </div>
+                    <a 
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#C49A3C] text-xs font-bold flex items-center gap-1 hover:underline transition-all"
+                    >
+                      {language === 'mn' ? 'Шууд үзэх' : 'View Live'} <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
                   </div>
                 </div>
-
-                {/* Subtle Border Glow on Hover */}
-                <div className="absolute inset-0 border-2 border-gold-500/0 group-hover:border-gold-500/20 transition-colors duration-700 pointer-events-none rounded-3xl" />
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
 
-        {cases.length > 6 && (
-          <div className="mt-20 text-center">
+        {/* Load More */}
+        {filteredCases.length > 6 && (
+          <div className="mt-16 text-center">
             <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setIsExpanded(!isExpanded)}
-              className="px-12 py-5 glass rounded-full font-bold text-sm text-gold-500 flex items-center gap-3 mx-auto border border-gold-500/20 transition-all duration-300"
+              className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-bold text-[#C49A3C] transition-all flex items-center gap-2 mx-auto"
             >
-              {isExpanded ? t('cases_less') : t('cases_more')}
-              <motion.div
-                animate={{ rotate: isExpanded ? 180 : 0 }}
-                transition={{ duration: 0.4, ease: "backOut" }}
-              >
-                <ChevronDown className="w-5 h-5" />
-              </motion.div>
+              {isExpanded 
+                ? (language === 'mn' ? "Бага харах" : "Show Less") 
+                : (language === 'mn' ? "Бүгдийг харах" : "View All")}
+              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
             </motion.button>
           </div>
         )}
@@ -220,4 +262,5 @@ export default function CaseStudies() {
     </section>
   );
 }
+
 
