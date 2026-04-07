@@ -31,6 +31,9 @@ export default function Hero() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
+          {/* Visually Hidden H1 for SEO */}
+          <h1 className="sr-only">CornerstoneAI - Вэбсайт хөгжүүлэлт, Апп хөгжүүлэлт, Брэнд бүтээх, Бизнес зөвлөгөө</h1>
+          
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -44,10 +47,10 @@ export default function Hero() {
             {t('hero_title_1')} {t('hero_title_2')}
           </motion.div>
           
-          <h1 className="text-5xl md:text-7xl font-serif font-bold leading-[1.1] mb-8">
+          <div className="text-5xl md:text-7xl font-serif font-bold leading-[1.1] mb-8" aria-hidden="true">
             {t('hero_title_1')} <br />
             <span className="text-gradient-gold">{t('hero_title_2')}</span>
-          </h1>
+          </div>
           
           <p className="text-lg text-white/60 max-w-xl mb-10 leading-relaxed">
             {t('hero_desc')}

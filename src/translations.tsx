@@ -20,7 +20,7 @@ export const translations: Translations = {
   // Hero
   hero_title_1: { mn: "Оюун ухаанд тулгуурласан.", en: "Built on Intelligence." },
   hero_title_2: { mn: "Үр дүнд чиглэсэн.", en: "Driven by Results." },
-  hero_desc: { mn: "AI-д суурилсан вэб хөгжүүлэлт, апп болон бизнесийн стратеги. Бид таны бизнесийг дижитал ертөнцөд хамгийн бат бөх суурьтайгаар босгоно.", en: "AI-powered web development, apps, and business strategy. We build your business on the most solid foundation in the digital world." },
+  hero_desc: { mn: "Вэбсайт хөгжүүлэлт, Апп хөгжүүлэлт, Брэнд бүтээх болон Бизнес зөвлөгөө өгөх AI-д суурилсан технологийн компани. Бид таны бизнесийг дижитал ертөнцөд хамгийн бат бөх суурьтайгаар босгоно.", en: "AI-powered technology company providing Web Development, App Development, Branding, and Business Consulting. We build your business on the most solid foundation in the digital world." },
   hero_cta: { mn: "Үнэгүй зөвлөгөө авах", en: "Get Free Consultation" },
   hero_stats_clients: { mn: "Сэтгэл ханамжтай харилцагчид", en: "Happy Clients" },
   hero_stats_projects: { mn: "Амжилттай төслүүд", en: "Successful Projects" },
