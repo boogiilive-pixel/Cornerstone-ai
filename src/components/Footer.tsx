@@ -8,17 +8,29 @@ export default function Footer() {
 
   return (
     <footer className="py-20 bg-navy-900 border-t border-white/5 relative overflow-hidden">
-      {/* Subtle Particles Background (Simplified) */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-        {[...Array(20)].map((_, i) => (
-          <div 
+      {/* Floating Particles Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(30)].map((_, i) => (
+          <motion.div 
             key={i}
-            className="absolute w-1 h-1 bg-gold-500 rounded-full animate-pulse"
-            style={{
-              top: `${Math.random() * 100}%`,
+            initial={{ 
+              top: "100%", 
               left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`
+              opacity: 0,
+              scale: Math.random() * 0.5 + 0.5
             }}
+            animate={{ 
+              top: "-5%", 
+              opacity: [0, 0.4, 0.4, 0],
+              left: `${(Math.random() * 100)}%`
+            }}
+            transition={{ 
+              duration: Math.random() * 10 + 15, 
+              repeat: Infinity, 
+              delay: Math.random() * 10,
+              ease: "linear"
+            }}
+            className="absolute w-1.5 h-1.5 bg-gold-500/40 rounded-full blur-[1px]"
           />
         ))}
       </div>

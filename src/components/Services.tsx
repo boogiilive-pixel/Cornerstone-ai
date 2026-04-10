@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Globe, Smartphone, Briefcase, Palette, ChevronRight } from "lucide-react";
 import { useLanguage } from "../translations";
+import { Link } from "react-router-dom";
 
 export default function Services() {
   const { t, language } = useLanguage();
@@ -116,10 +117,13 @@ export default function Services() {
                   ))}
                 </ul>
                 
-                <button className="flex items-center gap-2 text-gold-500 font-bold text-xs group/btn">
-                  {language === 'mn' ? 'Дэлгэрэнгүй үзэх' : 'Learn More'}
+                <Link 
+                  to="/digitalcard"
+                  className="flex items-center gap-2 text-gold-500 font-bold text-xs group/btn"
+                >
+                  {language === 'mn' ? 'Холбоо барих' : 'Contact Us'}
                   <ChevronRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}

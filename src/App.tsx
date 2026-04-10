@@ -16,6 +16,7 @@ import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import FacebookChat from "./components/FacebookChat";
 import NameCard from "./components/NameCard";
+import SectionDivider from "./components/SectionDivider";
 import { motion, useScroll, useSpring } from "motion/react";
 import { LanguageProvider } from "./translations";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -40,12 +41,19 @@ function MainLayout() {
       
       <main>
         <Hero />
+        <SectionDivider />
         <Services />
+        <SectionDivider />
         <Process />
+        <SectionDivider />
         <CaseStudies />
+        <SectionDivider />
         <WhyUs />
+        <SectionDivider />
         <Pricing />
+        <SectionDivider />
         <Testimonials />
+        <SectionDivider />
         <Contact />
       </main>
 
