@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useLanguage } from "../translations";
+import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
 export default function Footer() {
@@ -63,12 +64,17 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { name: t('nav_services'), href: "#services" },
+                { name: t('nav_about'), href: "/about" },
                 { name: t('nav_process'), href: "#process" },
                 { name: t('nav_cases'), href: "#cases" },
                 { name: t('nav_pricing'), href: "#pricing" }
               ].map((item) => (
                 <li key={item.name}>
-                  <a href={item.href} className="text-white/50 hover:text-gold-500 transition-colors">{item.name}</a>
+                  {item.href.startsWith('/') ? (
+                    <Link to={item.href} className="text-white/50 hover:text-gold-500 transition-colors">{item.name}</Link>
+                  ) : (
+                    <a href={item.href} className="text-white/50 hover:text-gold-500 transition-colors">{item.name}</a>
+                  )}
                 </li>
               ))}
             </ul>

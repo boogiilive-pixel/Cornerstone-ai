@@ -16,6 +16,7 @@ import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import FacebookChat from "./components/FacebookChat";
 import NameCard from "./components/NameCard";
+import About from "./components/About";
 import SectionDivider from "./components/SectionDivider";
 import { motion, useScroll, useSpring } from "motion/react";
 import { LanguageProvider } from "./translations";
@@ -70,6 +71,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainLayout />} />
+          <Route path="/about" element={<About />} />
           <Route path="/digitalcard" element={<NameCard />} />
         </Routes>
       </BrowserRouter>
