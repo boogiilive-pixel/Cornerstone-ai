@@ -14,6 +14,7 @@ import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import ScrollToHashElement from "./components/ScrollToHashElement";
 import FacebookChat from "./components/FacebookChat";
 import NameCard from "./components/NameCard";
 import About from "./components/About";
@@ -39,6 +40,7 @@ function MainLayout() {
       />
 
       <Navbar />
+      <ScrollToHashElement />
       
       <main>
         <Hero />

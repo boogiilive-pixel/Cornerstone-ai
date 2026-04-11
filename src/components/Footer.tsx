@@ -1,11 +1,29 @@
+import React from "react";
 import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { useLanguage } from "../translations";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 
 export default function Footer() {
   const { t } = useLanguage();
+  const location = useLocation();
+
+  const handleNavLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.includes('#')) {
+      const [path, hash] = href.split('#');
+      const targetId = hash;
+      const isCurrentPath = location.pathname === path || (path === '/' && location.pathname === '/');
+      
+      if (isCurrentPath) {
+        e.preventDefault();
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
 
   return (
     <footer className="py-20 bg-navy-900 border-t border-white/5 relative overflow-hidden">
@@ -63,15 +81,21 @@ export default function Footer() {
             <h4 className="text-lg font-serif font-bold mb-8">{t('footer_links')}</h4>
             <ul className="space-y-4">
               {[
-                { name: t('nav_services'), href: "#services" },
+                { name: t('nav_services'), href: "/#services" },
                 { name: t('nav_about'), href: "/about" },
-                { name: t('nav_process'), href: "#process" },
-                { name: t('nav_cases'), href: "#cases" },
-                { name: t('nav_pricing'), href: "#pricing" }
+                { name: t('nav_process'), href: "/#process" },
+                { name: t('nav_cases'), href: "/#cases" },
+                { name: t('nav_pricing'), href: "/#pricing" }
               ].map((item) => (
                 <li key={item.name}>
                   {item.href.startsWith('/') ? (
-                    <Link to={item.href} className="text-white/50 hover:text-gold-500 transition-colors">{item.name}</Link>
+                    <Link 
+                      to={item.href} 
+                      onClick={(e) => handleNavLinkClick(e, item.href)}
+                      className="text-white/50 hover:text-gold-500 transition-colors"
+                    >
+                      {item.name}
+                    </Link>
                   ) : (
                     <a href={item.href} className="text-white/50 hover:text-gold-500 transition-colors">{item.name}</a>
                   )}

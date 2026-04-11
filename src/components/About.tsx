@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
+import ScrollToHashElement from "./ScrollToHashElement";
 import { useLanguage } from "../translations";
 
 const AGENTS = [
@@ -104,6 +105,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-[#0A0F1E] text-[#E8E4DA] selection:bg-gold-500 selection:text-navy-900">
       <Navbar />
+      <ScrollToHashElement />
       
       {/* Subtle grid background */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-20"
