@@ -10,7 +10,8 @@ const AGENTS = [
   {
     id: "atlas",
     icon: "◈",
-    name: "Atlas",
+    name: "Oyun",
+    image: "https://lh3.googleusercontent.com/d/19GZWXff8FQNf-YJ-8MHdGPZSH5I5h31V",
     role: "Судалгаа & Дүн шинжилгээний агент",
     badge: "Research AI",
     badgeColor: "blue",
@@ -29,7 +30,8 @@ const AGENTS = [
   {
     id: "muse",
     icon: "✦",
-    name: "Muse",
+    name: "Goo",
+    image: "https://lh3.googleusercontent.com/d/10MPd1DgtlJw3miSSG9LEmJxtpdZmndz0",
     role: "Контент & Маркетингийн агент",
     badge: "Content AI",
     badgeColor: "teal",
@@ -48,7 +50,8 @@ const AGENTS = [
   {
     id: "forge",
     icon: "</>",
-    name: "Forge",
+    name: "Erdem",
+    image: "https://lh3.googleusercontent.com/d/1NXx2HpLLQ1aDYQ0uT07y3b_4F6FaWsOr",
     role: "Frontend хөгжүүлэлтийн агент",
     badge: "Frontend AI",
     badgeColor: "blue",
@@ -67,7 +70,8 @@ const AGENTS = [
   {
     id: "core",
     icon: "{ }",
-    name: "Core",
+    name: "Dalai",
+    image: "https://lh3.googleusercontent.com/d/1dKm2Nf7-dcyy6SE9mXJmd7k8rBYIYGi7",
     role: "Backend хөгжүүлэлтийн агент",
     badge: "Backend AI",
     badgeColor: "purple",
@@ -161,14 +165,37 @@ export default function About() {
         >
           <div className="absolute inset-0 bg-gradient-to-br from-gold-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
-          <div className="relative z-10 flex flex-col md:flex-row gap-12 items-start">
-            {/* Avatar */}
-            <div className="w-24 h-24 rounded-full flex-shrink-0 bg-gradient-to-br from-navy-800 to-navy-900 border-2 border-gold-500/40 flex items-center justify-center text-3xl font-bold text-gold-500 shadow-2xl">
-              БЭ
+          <div className="relative z-10 flex flex-col md:flex-row gap-12 items-center md:items-start">
+            {/* Founder Image with Effects */}
+            <div className="relative group/img flex-shrink-0">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="relative w-48 h-64 md:w-64 md:h-80 rounded-2xl overflow-hidden border-2 border-gold-500/30 z-10"
+              >
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1lT0O7ITl-yw40KjC4HklNlSXYsdzWLsw" 
+                  alt="Л.Болор-Эрдэнэ" 
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover grayscale group-hover/img:grayscale-0 transition-all duration-700 scale-110 group-hover/img:scale-100"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://picsum.photos/seed/founder/800/1200";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-transparent to-transparent" />
+              </motion.div>
+              
+              {/* Decorative frames */}
+              <div className="absolute -top-4 -left-4 w-24 h-24 border-t-2 border-l-2 border-gold-500/40 rounded-tl-2xl z-0" />
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 border-b-2 border-r-2 border-gold-500/40 rounded-br-2xl z-0" />
+              
+              {/* Animated glow */}
+              <div className="absolute inset-0 bg-gold-500/20 blur-3xl rounded-full opacity-0 group-hover/img:opacity-100 transition-opacity duration-700 -z-10" />
             </div>
 
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-4 mb-4">
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-4">
                 <h2 className="text-3xl font-serif font-bold text-white">Л.Болор-Эрдэнэ</h2>
                 <span className="text-white/40">— Boogii</span>
                 <span className="px-4 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-500 text-[10px] font-bold uppercase tracking-widest">
@@ -182,7 +209,7 @@ export default function About() {
                   : "Founder of Cornerstone AI. Supporting Mongolian businesses through AI solutions, web and mobile development, and brand strategy, building the future with the power of technology."}
               </p>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap justify-center md:justify-start gap-4">
                 {[
                   { num: "6+", label: language === 'mn' ? "Платформ" : "Platforms" },
                   { num: "AI", label: language === 'mn' ? "Чиглэл" : "Focus" },
@@ -231,20 +258,41 @@ export default function About() {
                 <div className="absolute inset-0 bg-gradient-to-br from-gold-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="relative z-10">
-                  <div className="flex items-start gap-6 mb-8">
-                    <div 
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-mono font-bold transition-all duration-500"
-                      style={{ 
-                        background: "rgba(255,255,255,0.03)",
-                        border: `1px solid ${badge.border}`,
-                        color: badge.text
-                      }}
-                    >
-                      {agent.icon}
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
+                    {/* Agent Image with Effects */}
+                    <div className="relative group/agent-img flex-shrink-0">
+                      <div className="relative w-28 h-36 rounded-xl overflow-hidden border border-gold-500/20 z-10">
+                        <img 
+                          src={agent.image} 
+                          alt={agent.name} 
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover grayscale group-hover/agent-img:grayscale-0 transition-all duration-500 scale-110 group-hover/agent-img:scale-100"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${agent.id}/400/600`;
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent" />
+                      </div>
+                      {/* Decorative elements */}
+                      <div className="absolute -top-2 -left-2 w-8 h-8 border-t border-l border-gold-500/30 rounded-tl-lg z-0" />
+                      <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b border-r border-gold-500/30 rounded-br-lg z-0" />
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-1">{agent.name}</h3>
-                      <p className="text-xs text-white/40 mb-4">{agent.role}</p>
+
+                    <div className="flex-1 text-center sm:text-left">
+                      <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
+                        <div 
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold"
+                          style={{ 
+                            background: "rgba(255,255,255,0.03)",
+                            border: `1px solid ${badge.border}`,
+                            color: badge.text
+                          }}
+                        >
+                          {agent.icon}
+                        </div>
+                        <h3 className="text-xl font-bold text-white">{agent.name}</h3>
+                      </div>
+                      <p className="text-xs text-white/40 mb-3">{agent.role}</p>
                       <span 
                         className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border"
                         style={{ 
