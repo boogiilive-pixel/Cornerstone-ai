@@ -81,15 +81,15 @@ export default function CaseStudies() {
     },
     {
       id: 6,
-      category: "AI",
-      title: { mn: "AI Сошиал Платформ", en: "AI Social Platform" },
+      category: "Platform",
+      title: { mn: "Компанийн дотоод систем", en: "Company Internal System" },
       description: { 
-        mn: "AI-д суурилсан шинэ үеийн сошиал медиа платформ.", 
-        en: "Next-generation AI-powered social media platform." 
+        mn: "Бизнесийн бүх үйл ажиллагааг нэг дороос хянах ухаалаг систем.", 
+        en: "Intelligent system to monitor all business operations from one place." 
       },
-      image: "https://picsum.photos/seed/social-media/800/1200",
-      link: "#",
-      stack: ["PyTorch", "React"]
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop",
+      link: "/projects/internal-system",
+      stack: ["React", "Recharts", "Tailwind"]
     },
     {
       id: 7,
