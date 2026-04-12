@@ -18,6 +18,8 @@ import ScrollToHashElement from "./components/ScrollToHashElement";
 import FacebookChat from "./components/FacebookChat";
 import NameCard from "./components/NameCard";
 import About from "./components/About";
+import Insights from "./components/Insights";
+import InsightDetail from "./components/InsightDetail";
 import FashionDemo from "./components/projects/FashionDemo";
 import InternalSystemDemo from "./components/projects/InternalSystemDemo";
 import SectionDivider from "./components/SectionDivider";
@@ -76,6 +78,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<MainLayout />} />
           <Route path="/about" element={<About />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/insights/:slug" element={<InsightDetail />} />
           <Route path="/digitalcard" element={<NameCard />} />
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />

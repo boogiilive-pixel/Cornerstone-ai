@@ -33,7 +33,7 @@ export default function Navbar() {
   const navLinks = [
     { name: t('nav_services'), href: "/#services" },
     { name: t('nav_about'), href: "/about" },
-    { name: t('nav_process'), href: "/#process" },
+    { name: t('nav_insights'), href: "/insights" },
     { name: t('nav_cases'), href: "/#cases" },
     { name: t('nav_pricing'), href: "/#pricing" },
     { name: "Digital Card", href: "/digitalcard" },

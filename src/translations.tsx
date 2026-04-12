@@ -13,6 +13,7 @@ export const translations: Translations = {
   // Navbar
   nav_services: { mn: "Үйлчилгээ", en: "Services" },
   nav_about: { mn: "Бидний тухай", en: "About Us" },
+  nav_insights: { mn: "Мэдээлэл", en: "Insights" },
   nav_process: { mn: "Процесс", en: "Process" },
   nav_cases: { mn: "Ажил", en: "Portfolio" },
   nav_pricing: { mn: "Үнэ", en: "Pricing" },
