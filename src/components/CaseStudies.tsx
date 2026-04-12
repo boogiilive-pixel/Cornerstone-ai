@@ -68,6 +68,18 @@ export default function CaseStudies() {
       stack: ["React", "Node.js"]
     },
     {
+      id: 8,
+      category: "Website",
+      title: { mn: "Suut Resort - Амралтын газар", en: "Suut Resort - Vacation Spot" },
+      description: { 
+        mn: "Байгалийн сайханд байрлах амралтын газрын захиалга, мэдээллийн вэбсайт.", 
+        en: "Booking and information website for a resort located in beautiful nature." 
+      },
+      image: "https://lh3.googleusercontent.com/d/15k39Lh7J5SSZOarukIvI8A6rcWrFOQ3f",
+      link: "https://suutresort.com/",
+      stack: ["Next.js", "Tailwind"]
+    },
+    {
       id: 5,
       category: "Platform",
       title: { mn: "Онлайн дэлгүүр", en: "Online Store" },
