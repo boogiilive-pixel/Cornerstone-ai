@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "../translations";
+import { Link } from "react-router-dom";
 
 type Category = "All" | "AI" | "Mobile" | "Website" | "Platform";
 
@@ -69,14 +70,14 @@ export default function CaseStudies() {
     {
       id: 5,
       category: "Platform",
-      title: { mn: "Бизнес Дата Аналитик", en: "Business Data Analytics" },
+      title: { mn: "Онлайн дэлгүүр", en: "Online Store" },
       description: { 
-        mn: "Бизнесийн шийдвэр гаргалтад туслах дата визуалчлалын систем.", 
-        en: "Data visualization system to assist in business decision making." 
+        mn: "Хэрэглэгчдэд ээлтэй, орчин үеийн загвартай онлайн худалдааны платформ.", 
+        en: "User-friendly, modern design e-commerce platform." 
       },
-      image: "https://picsum.photos/seed/dashboard/800/1200",
-      link: "#",
-      stack: ["D3.js", "Python"]
+      image: "https://lh3.googleusercontent.com/d/1vlnCxzBiIPbPePJgx4PyJtGSSJeHvO9C",
+      link: "/projects/data-analytics",
+      stack: ["React", "Tailwind", "Motion"]
     },
     {
       id: 6,
@@ -227,14 +228,23 @@ export default function CaseStudies() {
                         </span>
                       ))}
                     </div>
-                    <a 
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#C49A3C] text-xs font-bold flex items-center gap-1 hover:underline transition-all"
-                    >
-                      {language === 'mn' ? 'Шууд үзэх' : 'View Live'} <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
+                    {item.link.startsWith('/') ? (
+                      <Link 
+                        to={item.link}
+                        className="text-[#C49A3C] text-xs font-bold flex items-center gap-1 hover:underline transition-all"
+                      >
+                        {language === 'mn' ? 'Шууд үзэх' : 'View Live'} <ArrowUpRight className="w-3.5 h-3.5" />
+                      </Link>
+                    ) : (
+                      <a 
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#C49A3C] text-xs font-bold flex items-center gap-1 hover:underline transition-all"
+                      >
+                        {language === 'mn' ? 'Шууд үзэх' : 'View Live'} <ArrowUpRight className="w-3.5 h-3.5" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>
