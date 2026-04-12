@@ -1,11 +1,11 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, Calendar, Share2 } from "lucide-react";
+import { ArrowLeft, Clock, Calendar, Share2, Facebook, Twitter, Link as LinkIcon, Check } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 import ScrollToHashElement from "./ScrollToHashElement";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ARTICLES_CONTENT: Record<string, any> = {
   "what-is-ai-agent": {
@@ -119,13 +119,28 @@ export default function InsightDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const article = slug ? ARTICLES_CONTENT[slug] : null;
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (!article && slug) {
-      // If article not found, maybe redirect or show error
-    }
   }, [article, slug]);
+
+  const handleShare = (platform: 'facebook' | 'x' | 'copy') => {
+    const url = window.location.href;
+    const title = article?.title || "Cornerstone AI Insight";
+
+    if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    } else if (platform === 'x') {
+      window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, '_blank');
+    } else if (platform === 'copy') {
+      navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+    setShowShareMenu(false);
+  };
 
   if (!article) {
     return (
@@ -203,10 +218,47 @@ export default function InsightDetail() {
 
           {/* Footer Actions */}
           <div className="mt-20 pt-12 border-t border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button className="p-3 rounded-full bg-white/5 border border-white/10 hover:border-[#C49A3C]/30 transition-all">
-                <Share2 className="w-5 h-5 text-[#6B7A99]" />
+            <div className="flex items-center gap-4 relative">
+              <button 
+                onClick={() => setShowShareMenu(!showShareMenu)}
+                className="p-3 rounded-full bg-white/5 border border-white/10 hover:border-[#C49A3C]/30 transition-all group"
+                title="Хуваалцах"
+              >
+                <Share2 className="w-5 h-5 text-[#6B7A99] group-hover:text-[#C49A3C]" />
               </button>
+
+              <AnimatePresence>
+                {showShareMenu && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                    className="absolute bottom-full left-0 mb-4 p-2 bg-[#111827] border border-white/10 rounded-2xl flex items-center gap-2 shadow-2xl z-20"
+                  >
+                    <button 
+                      onClick={() => handleShare('facebook')}
+                      className="p-2.5 rounded-xl hover:bg-white/5 text-[#6B7A99] hover:text-[#3B82F6] transition-all"
+                      title="Facebook-ээр хуваалцах"
+                    >
+                      <Facebook className="w-5 h-5" />
+                    </button>
+                    <button 
+                      onClick={() => handleShare('x')}
+                      className="p-2.5 rounded-xl hover:bg-white/5 text-[#6B7A99] hover:text-white transition-all"
+                      title="X-ээр хуваалцах"
+                    >
+                      <Twitter className="w-5 h-5" />
+                    </button>
+                    <button 
+                      onClick={() => handleShare('copy')}
+                      className="p-2.5 rounded-xl hover:bg-white/5 text-[#6B7A99] hover:text-[#C49A3C] transition-all"
+                      title="Холбоос хуулах"
+                    >
+                      {copied ? <Check className="w-5 h-5 text-emerald-500" /> : <LinkIcon className="w-5 h-5" />}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <Link 
               to="/#contact"
