@@ -36,38 +36,31 @@ export default function GooChat() {
 
     try {
       const apiKey = process.env.GEMINI_API_KEY;
-      console.log("Attempting to initialize Gemini with API Key length:", apiKey?.length || 0);
-      
       if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey.length < 10) {
-        throw new Error("Invalid or missing GEMINI_API_KEY. Please check your Vercel Environment Variables.");
+        throw new Error("Invalid or missing GEMINI_API_KEY.");
       }
 
       const ai = new GoogleGenAI({ apiKey });
       
       const systemInstruction = `
-        You are Goo, a professional AI agent and employee at Cornerstone AI, a leading Mongolian AI and technology company. 
-        Your tone is professional, helpful, and innovative. 
-        You speak in Mongolian (and English if requested).
+        Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
         
-        Cornerstone AI Services:
-        - AI Automation & Agents (like yourself)
-        - Web Development (Next.js, React, modern web tech)
-        - Mobile App Development (Flutter, high-performance apps)
-        - Business Intelligence & Dashboards (Cornerstone OS)
-        - SEO Optimization for Mongolian market
+        ХАРИЛЦААНЫ ДҮРЭМ:
+        1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
+        2. Хэрэв хэрэглэгч компанитай холбоогүй (жишээ нь: хоолны жор, улс төр, ерөнхий мэдлэг гэх мэт) зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой. Та компанитай холбоотой асуултаа асууна уу." гэж маш эелдэгээр хариулна.
+        3. Хариулт нь маш товч бөгөөд тодорхой байна (Ихэвчлэн 1-3 өгүүлбэрт багтаах).
+        4. Найрсаг, инновацилаг, мэргэжлийн өнгө аясаар харилцана.
         
-        Key Projects to mention if relevant:
-        - Mergejil.com (Career selection system)
-        - Mongol Mind (Personal development app)
-        - Sorilt.com (Psychological testing platform)
-        - Suut Resort (Modern resort website)
+        Cornerstone AI Үйлчилгээнүүд:
+        - AI автоматжуулалт болон AI агентууд
+        - Вэб хөгжүүлэлт (Next.js, React)
+        - Мобайл апп хөгжүүлэлт (Flutter)
+        - Бизнес аналитик (Cornerstone OS)
+        - SEO оновчлол
         
-        Your goal is to assist visitors, answer questions about Cornerstone AI, and encourage them to start a project.
-        Always be polite and represent the company's high standards.
-        If you don't know something specific, suggest they contact the team via the contact form or digital card.
+        Төслүүд: Mergejil.com, Mongol Mind, Sorilt.com, Suut Resort.
       `;
 
-      // Gemini history must start with a 'user' message. 
       const history = messages
         .slice(1) 
         .map(m => ({
@@ -75,7 +68,6 @@ export default function GooChat() {
           parts: [{ text: m.text }]
         }));
 
-      console.log("Sending request to Gemini model...");
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [
@@ -84,25 +76,15 @@ export default function GooChat() {
         ],
         config: {
           systemInstruction,
-          temperature: 0.7,
+          temperature: 0.5,
         },
       });
 
-      const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа. Та дахин оролдоно уу.";
+      const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа.";
       setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
     } catch (error: any) {
-      console.error("Detailed Chat Error:", error);
-      let errorMessage = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
-      
-      if (error?.message?.includes("API_KEY")) {
-        errorMessage = "API Key тохиргоо буруу байна. Vercel дээр GEMINI_API_KEY-г зөв оруулсан эсэхээ шалгана уу.";
-      } else if (error?.status === 403 || error?.message?.includes("403")) {
-        errorMessage = "API Key-д хандах эрхгүй байна (403). Google AI Studio-оос шинэ түлхүүр авч үзнэ үү.";
-      } else if (error?.status === 404 || error?.message?.includes("404")) {
-        errorMessage = "Модель олдсонгүй (404). Систем шинэчлэгдэж байна.";
-      }
-
-      setMessages(prev => [...prev, { role: "model", text: errorMessage }]);
+      console.error("Chat Error:", error);
+      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
     } finally {
       setIsLoading(false);
     }
