@@ -35,7 +35,14 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const apiKey = process.env.GEMINI_API_KEY;
+      console.log("Attempting to initialize Gemini with API Key length:", apiKey?.length || 0);
+      
+      if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey.length < 10) {
+        throw new Error("Invalid or missing GEMINI_API_KEY. Please check your Vercel Environment Variables.");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       
       const systemInstruction = `
         You are Goo, a professional AI agent and employee at Cornerstone AI, a leading Mongolian AI and technology company. 
@@ -61,7 +68,6 @@ export default function GooChat() {
       `;
 
       // Gemini history must start with a 'user' message. 
-      // Our first message is a 'model' greeting, so we skip it for the API history.
       const history = messages
         .slice(1) 
         .map(m => ({
@@ -69,6 +75,7 @@ export default function GooChat() {
           parts: [{ text: m.text }]
         }));
 
+      console.log("Sending request to Gemini model...");
       const response = await ai.models.generateContent({
         model: "gemini-1.5-flash",
         contents: [
@@ -83,9 +90,19 @@ export default function GooChat() {
 
       const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа. Та дахин оролдоно уу.";
       setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
-    } catch (error) {
-      console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
+    } catch (error: any) {
+      console.error("Detailed Chat Error:", error);
+      let errorMessage = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
+      
+      if (error?.message?.includes("API_KEY")) {
+        errorMessage = "API Key тохиргоо буруу байна. Vercel дээр GEMINI_API_KEY-г зөв оруулсан эсэхээ шалгана уу.";
+      } else if (error?.status === 403 || error?.message?.includes("403")) {
+        errorMessage = "API Key-д хандах эрхгүй байна (403). Google AI Studio-оос шинэ түлхүүр авч үзнэ үү.";
+      } else if (error?.status === 404 || error?.message?.includes("404")) {
+        errorMessage = "Модель олдсонгүй (404). Систем шинэчлэгдэж байна.";
+      }
+
+      setMessages(prev => [...prev, { role: "model", text: errorMessage }]);
     } finally {
       setIsLoading(false);
     }
