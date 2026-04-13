@@ -35,12 +35,7 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("GEMINI_API_KEY is not defined");
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const systemInstruction = `
         You are Goo, a professional AI agent and employee at Cornerstone AI, a leading Mongolian AI and technology company. 
@@ -75,7 +70,7 @@ export default function GooChat() {
         }));
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash",
         contents: [
           ...history,
           { role: "user", parts: [{ text: userMessage }] }
@@ -90,10 +85,7 @@ export default function GooChat() {
       setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
     } catch (error) {
       console.error("Chat Error:", error);
-      const errorMessage = error instanceof Error && error.message.includes("API_KEY") 
-        ? "Системийн тохиргоо (API Key) олдсонгүй. Та түр хүлээнэ үү."
-        : "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
-      setMessages(prev => [...prev, { role: "model", text: errorMessage }]);
+      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
     } finally {
       setIsLoading(false);
     }
