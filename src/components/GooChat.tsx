@@ -168,8 +168,22 @@ export default function GooChat() {
                   ))}
                   {isLoading && (
                     <div className="flex justify-start">
-                      <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none">
-                        <Loader2 className="w-4 h-4 text-[#C49A3C] animate-spin" />
+                      <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none flex items-center gap-1">
+                        <motion.span
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0 }}
+                          className="w-1.5 h-1.5 bg-[#C49A3C] rounded-full"
+                        />
+                        <motion.span
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                          className="w-1.5 h-1.5 bg-[#C49A3C] rounded-full"
+                        />
+                        <motion.span
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                          className="w-1.5 h-1.5 bg-[#C49A3C] rounded-full"
+                        />
                       </div>
                     </div>
                   )}
