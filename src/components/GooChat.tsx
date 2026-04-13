@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Send, Bot, User, Loader2, Minimize2, Maximize2 } from "lucide-react";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
 
 interface Message {
-  role: "user" | "model";
+  role: "user" | "model" | "function";
   text: string;
+  name?: string;
 }
 
 export default function GooChat() {
@@ -26,12 +27,27 @@ export default function GooChat() {
     scrollToBottom();
   }, [messages]);
 
+  const sendLeadEmail = async (name: string, phone: string, email: string, message: string) => {
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, email, message: `[AI Lead] ${message}` }),
+      });
+      return response.ok;
+    } catch (error) {
+      console.error("Error sending lead email:", error);
+      return false;
+    }
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setInput("");
-    setMessages(prev => [...prev, { role: "user", text: userMessage }]);
+    const newMessages = [...messages, { role: "user" as const, text: userMessage }];
+    setMessages(newMessages);
     setIsLoading(true);
 
     try {
@@ -52,6 +68,11 @@ export default function GooChat() {
         4. Найрсаг, инновацилаг, мэргэжлийн өнгө аясаар харилцана.
         5. Хэрэв танд тодорхой мэдээлэл байхгүй бол Google Search ашиглан хайлт хийж хамгийн сүүлийн үеийн мэдээллийг олж өгч болно.
         
+        ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
+        - Хэрэв хэрэглэгч ажил хийлгэх, хамтран ажиллах, эсвэл үнийн санал авах сонирхолтой байвал (нааштай хандвал) та заавал тэдний Нэр, Утасны дугаар, Имэйл хаягийг асууж авна.
+        - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг компани руу илгээнэ.
+        - Илгээсний дараа хэрэглэгчид "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно" гэж мэдэгдэнэ.
+
         Cornerstone AI Үйлчилгээнүүд:
         - AI автоматжуулалт болон AI агентууд
         - Вэб хөгжүүлэлт (Next.js, React)
@@ -73,10 +94,25 @@ export default function GooChat() {
         Төслүүд: Mergejil.com, Mongol Mind, Sorilt.com, Suut Resort.
       `;
 
-      const history = messages
+      const sendLeadInformation: FunctionDeclaration = {
+        name: "sendLeadInformation",
+        description: "Sends user contact information (lead) to Cornerstone AI team.",
+        parameters: {
+          type: Type.OBJECT,
+          properties: {
+            name: { type: Type.STRING, description: "User's full name" },
+            phone: { type: Type.STRING, description: "User's phone number" },
+            email: { type: Type.STRING, description: "User's email address" },
+            message: { type: Type.STRING, description: "Brief description of the user's request or project" }
+          },
+          required: ["name", "phone", "email", "message"]
+        }
+      };
+
+      const history = newMessages
         .slice(1) 
         .map(m => ({
-          role: m.role,
+          role: m.role === "function" ? "model" : m.role, // Map function role to model for history if needed, but better to handle properly
           parts: [{ text: m.text }]
         }));
 
@@ -89,12 +125,46 @@ export default function GooChat() {
         config: {
           systemInstruction,
           temperature: 0.5,
-          tools: [{ googleSearch: {} }]
+          tools: [
+            { googleSearch: {} },
+            { functionDeclarations: [sendLeadInformation] }
+          ],
+          toolConfig: { includeServerSideToolInvocations: true }
         },
       });
 
-      const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа.";
-      setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
+      const functionCalls = response.functionCalls;
+      if (functionCalls && functionCalls.length > 0) {
+        for (const call of functionCalls) {
+          if (call.name === "sendLeadInformation") {
+            const { name, phone, email, message } = call.args as any;
+            const success = await sendLeadEmail(name, phone, email, message);
+            
+            // After function call, we should probably tell the model it succeeded
+            // But for simplicity in this UI, we can just add a model message directly or let the model respond again.
+            // Let's do a second call to let the model confirm to the user.
+            const secondResponse = await ai.models.generateContent({
+              model: "gemini-3-flash-preview",
+              contents: [
+                ...history,
+                { role: "user", parts: [{ text: userMessage }] },
+                { role: "model", parts: [response.candidates[0].content.parts[0]] },
+                { 
+                  role: "user", 
+                  parts: [{ text: success ? "Мэдээллийг амжилттай илгээлээ." : "Мэдээлэл илгээхэд алдаа гарлаа." }] 
+                }
+              ],
+              config: { systemInstruction, temperature: 0.5 }
+            });
+            
+            const finalResponse = secondResponse.text || "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно.";
+            setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
+          }
+        }
+      } else {
+        const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа.";
+        setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
+      }
     } catch (error: any) {
       console.error("Chat Error:", error);
       setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
