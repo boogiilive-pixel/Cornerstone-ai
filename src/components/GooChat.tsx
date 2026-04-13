@@ -134,11 +134,15 @@ export default function GooChat() {
       });
 
       const functionCalls = response.functionCalls;
+      console.log("Gemini Response Function Calls:", functionCalls);
+      
       if (functionCalls && functionCalls.length > 0) {
         for (const call of functionCalls) {
           if (call.name === "sendLeadInformation") {
+            console.log("Executing sendLeadInformation with args:", call.args);
             const { name, phone, email, message } = call.args as any;
             const success = await sendLeadEmail(name, phone, email, message);
+            console.log("Lead email send success:", success);
             
             // After function call, we should probably tell the model it succeeded
             // But for simplicity in this UI, we can just add a model message directly or let the model respond again.

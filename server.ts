@@ -24,9 +24,11 @@ async function startServer() {
     const { name, email, phone, message } = req.body;
 
     if (!resend) {
-      console.warn("RESEND_API_KEY is not set. Simulating email send.");
-      return res.json({ success: true, message: "Simulated success (API Key missing)" });
+      console.error("RESEND_API_KEY is NOT set in the environment variables!");
+      return res.status(500).json({ success: false, error: "RESEND_API_KEY is missing on server" });
     }
+
+    console.log(`Attempting to send email to boogiilive@gmail.com from ${name} (${email})`);
 
     try {
       const { data, error } = await resend.emails.send({
