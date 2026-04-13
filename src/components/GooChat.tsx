@@ -35,7 +35,12 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("GEMINI_API_KEY is not defined");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       
       const systemInstruction = `
         You are Goo, a professional AI agent and employee at Cornerstone AI, a leading Mongolian AI and technology company. 
@@ -60,10 +65,19 @@ export default function GooChat() {
         If you don't know something specific, suggest they contact the team via the contact form or digital card.
       `;
 
+      // Gemini history must start with a 'user' message. 
+      // Our first message is a 'model' greeting, so we skip it for the API history.
+      const history = messages
+        .slice(1) 
+        .map(m => ({
+          role: m.role,
+          parts: [{ text: m.text }]
+        }));
+
       const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
+        model: "gemini-3-flash-preview",
         contents: [
-          ...messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
+          ...history,
           { role: "user", parts: [{ text: userMessage }] }
         ],
         config: {
@@ -76,7 +90,10 @@ export default function GooChat() {
       setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
     } catch (error) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
+      const errorMessage = error instanceof Error && error.message.includes("API_KEY") 
+        ? "Системийн тохиргоо (API Key) олдсонгүй. Та түр хүлээнэ үү."
+        : "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
+      setMessages(prev => [...prev, { role: "model", text: errorMessage }]);
     } finally {
       setIsLoading(false);
     }
