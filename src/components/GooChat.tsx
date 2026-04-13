@@ -140,32 +140,31 @@ export default function GooChat() {
       const functionCalls = response.functionCalls;
       console.log("Gemini Response Function Calls:", functionCalls);
       
-      if (functionCalls && functionCalls.length > 0) {
-        for (const call of functionCalls) {
-          if (call.name === "sendLeadInformation") {
-            console.log("Executing sendLeadInformation with args:", call.args);
-            const { name, phone, email, message } = call.args as any;
-            const result = await sendLeadEmail(name, phone, email, message);
-            console.log("Lead email result:", result);
-            
-            const secondResponse = await ai.models.generateContent({
-              model: "gemini-3-flash-preview",
-              contents: [
-                ...history,
-                { role: "user", parts: [{ text: userMessage }] },
-                { role: "model", parts: [response.candidates[0].content.parts[0]] },
-                { 
-                  role: "user", 
-                  parts: [{ text: result.success ? "Мэдээллийг амжилттай илгээлээ." : `Мэдээлэл илгээхэд алдаа гарлаа: ${result.error}` }] 
-                }
-              ],
-              config: { systemInstruction, temperature: 0.5 }
-            });
-            
-            const finalResponse = secondResponse.text || (result.success ? "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно." : "Уучлаарай, техникийн саатал гарлаа.");
-            setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
-          }
-        }
+      // Find the first lead information call and only process that one to avoid duplicates
+      const leadCall = functionCalls?.find(call => call.name === "sendLeadInformation");
+      
+      if (leadCall) {
+        console.log("Executing sendLeadInformation with args:", leadCall.args);
+        const { name, phone, email, message } = leadCall.args as any;
+        const result = await sendLeadEmail(name, phone, email, message);
+        console.log("Lead email result:", result);
+        
+        const secondResponse = await ai.models.generateContent({
+          model: "gemini-3-flash-preview",
+          contents: [
+            ...history,
+            { role: "user", parts: [{ text: userMessage }] },
+            { role: "model", parts: [response.candidates[0].content.parts[0]] },
+            { 
+              role: "user", 
+              parts: [{ text: result.success ? "Мэдээллийг амжилттай илгээлээ." : `Мэдээлэл илгээхэд алдаа гарлаа: ${result.error}` }] 
+            }
+          ],
+          config: { systemInstruction, temperature: 0.5 }
+        });
+        
+        const finalResponse = secondResponse.text || (result.success ? "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно." : "Уучлаарай, техникийн саатал гарлаа.");
+        setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
       } else {
         const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа.";
         setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
