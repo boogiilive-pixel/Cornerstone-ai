@@ -34,10 +34,14 @@ export default function GooChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, phone, email, message: `[AI Lead] ${message}` }),
       });
-      return response.ok;
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, error: data.error || "Unknown server error" };
+      }
+      return { success: true };
     } catch (error) {
       console.error("Error sending lead email:", error);
-      return false;
+      return { success: false, error: "Network error" };
     }
   };
 
@@ -141,12 +145,9 @@ export default function GooChat() {
           if (call.name === "sendLeadInformation") {
             console.log("Executing sendLeadInformation with args:", call.args);
             const { name, phone, email, message } = call.args as any;
-            const success = await sendLeadEmail(name, phone, email, message);
-            console.log("Lead email send success:", success);
+            const result = await sendLeadEmail(name, phone, email, message);
+            console.log("Lead email result:", result);
             
-            // After function call, we should probably tell the model it succeeded
-            // But for simplicity in this UI, we can just add a model message directly or let the model respond again.
-            // Let's do a second call to let the model confirm to the user.
             const secondResponse = await ai.models.generateContent({
               model: "gemini-3-flash-preview",
               contents: [
@@ -155,13 +156,13 @@ export default function GooChat() {
                 { role: "model", parts: [response.candidates[0].content.parts[0]] },
                 { 
                   role: "user", 
-                  parts: [{ text: success ? "Мэдээллийг амжилттай илгээлээ." : "Мэдээлэл илгээхэд алдаа гарлаа." }] 
+                  parts: [{ text: result.success ? "Мэдээллийг амжилттай илгээлээ." : `Мэдээлэл илгээхэд алдаа гарлаа: ${result.error}` }] 
                 }
               ],
               config: { systemInstruction, temperature: 0.5 }
             });
             
-            const finalResponse = secondResponse.text || "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно.";
+            const finalResponse = secondResponse.text || (result.success ? "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно." : "Уучлаарай, техникийн саатал гарлаа.");
             setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
           }
         }

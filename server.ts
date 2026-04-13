@@ -24,8 +24,9 @@ async function startServer() {
     const { name, email, phone, message } = req.body;
 
     if (!resend) {
-      console.error("RESEND_API_KEY is NOT set in the environment variables!");
-      return res.status(500).json({ success: false, error: "RESEND_API_KEY is missing on server" });
+      const errorMsg = "RESEND_API_KEY is NOT set in the environment variables!";
+      console.error(errorMsg);
+      return res.status(500).json({ success: false, error: errorMsg });
     }
 
     console.log(`Attempting to send email to boogiilive@gmail.com from ${name} (${email})`);
@@ -34,20 +35,20 @@ async function startServer() {
       const { data, error } = await resend.emails.send({
         from: "CornerstoneAI <onboarding@resend.dev>",
         to: ["boogiilive@gmail.com"],
-        subject: `New Contact Form Submission from ${name}`,
+        subject: `[AI Lead] New Request from ${name}`,
         html: `
-          <h3>New Contact Request</h3>
+          <h3>New Lead from AI Chatbot</h3>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Message:</strong></p>
+          <p><strong>Project/Message:</strong></p>
           <p>${message}</p>
         `,
       });
 
       if (error) {
-        console.error("Resend Error:", error);
-        return res.status(400).json({ success: false, error });
+        console.error("Resend API Error:", error);
+        return res.status(400).json({ success: false, error: error.message || "Resend API rejected the request" });
       }
 
       res.json({ success: true, data });
