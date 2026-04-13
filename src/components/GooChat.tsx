@@ -77,7 +77,7 @@ export default function GooChat() {
 
       console.log("Sending request to Gemini model...");
       const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
+        model: "gemini-3-flash-preview",
         contents: [
           ...history,
           { role: "user", parts: [{ text: userMessage }] }
