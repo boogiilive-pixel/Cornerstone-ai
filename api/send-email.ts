@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     console.log("Sending email via Resend...");
     const { data, error } = await resend.emails.send({
-      from: "Cornerstone AI <info@cornerstone.dev>",
+      from: "Cornerstone AI <info@cornerstoneai.dev>",
       to: ["boogiilive@gmail.com"],
       subject: `[AI Lead] New Request from ${name}`,
       html: `
