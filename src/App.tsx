@@ -15,7 +15,7 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollToHashElement from "./components/ScrollToHashElement";
-import FacebookChat from "./components/FacebookChat";
+import GooChat from "./components/GooChat";
 import NameCard from "./components/NameCard";
 import About from "./components/About";
 import Insights from "./components/Insights";
@@ -66,7 +66,6 @@ function MainLayout() {
 
       <Footer />
       <ScrollToTop />
-      <FacebookChat />
     </div>
   );
 }
@@ -84,6 +83,7 @@ export default function App() {
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />
         </Routes>
+        <GooChat />
       </BrowserRouter>
     </LanguageProvider>
   );

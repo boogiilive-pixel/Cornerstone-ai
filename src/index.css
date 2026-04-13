@@ -73,4 +73,18 @@
   .animate-slide-glow {
     animation: slide-glow 3s ease-in-out infinite;
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(196, 154, 60, 0.2);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(196, 154, 60, 0.4);
+  }
 }
