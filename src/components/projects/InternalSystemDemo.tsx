@@ -15,7 +15,9 @@ import {
   Sparkles,
   Search,
   Calendar,
-  MoreVertical
+  MoreVertical,
+  Menu,
+  X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -72,50 +74,80 @@ const financialSummary = [
 
 export default function InternalSystemDemo() {
   const [activeNav, setActiveNav] = useState("Overview");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const NavItems = () => (
+    <nav className="flex-1 px-4 py-4 space-y-2">
+      {[
+        { name: "Overview", icon: LayoutDashboard, label: "Ерөнхий тойм" },
+        { name: "Sales", icon: ShoppingBag, label: "Борлуулалт" },
+        { name: "Finance", icon: Wallet, label: "Санхүү" },
+        { name: "Team", icon: Users, label: "Ажилтнууд" },
+        { name: "Reports", icon: BarChart3, label: "Тайлан" },
+        { name: "Settings", icon: Settings, label: "Тохиргоо" },
+      ].map((item) => (
+        <button
+          key={item.name}
+          onClick={() => {
+            setActiveNav(item.name);
+            setIsSidebarOpen(false);
+          }}
+          className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-sm font-medium transition-all group relative ${
+            activeNav === item.name 
+              ? "text-[#C49A3C] bg-[#C49A3C]/5" 
+              : "text-[#6B7A99] hover:text-white hover:bg-white/5"
+          }`}
+        >
+          {activeNav === item.name && (
+            <motion.div 
+              layoutId="sidebar-active"
+              className="absolute left-0 top-2 bottom-2 w-1 bg-[#C49A3C] rounded-r-full"
+            />
+          )}
+          <item.icon className={`w-5 h-5 ${activeNav === item.name ? "text-[#C49A3C]" : "group-hover:text-white"}`} />
+          {item.label}
+        </button>
+      ))}
+    </nav>
+  );
+
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-off-white font-sans flex overflow-hidden">
+    <div className="min-h-screen bg-[#0A0F1E] text-off-white font-sans flex overflow-hidden relative">
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
-      <aside className="w-[240px] bg-[#0D1526] border-r border-white/5 flex flex-col h-screen sticky top-0 z-50">
-        <div className="p-8">
+      <aside className={`
+        fixed inset-y-0 left-0 z-[110] w-[280px] bg-[#0D1526] border-r border-white/5 flex flex-col h-screen transition-transform duration-300 lg:relative lg:translate-x-0 lg:w-[240px]
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        <div className="p-8 flex items-center justify-between">
           <div className="text-xl font-bold text-[#C49A3C] flex items-center gap-2">
             <span className="text-2xl">◈</span> Cornerstone OS
           </div>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="p-2 text-[#6B7A99] hover:text-white lg:hidden"
+          >
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-2">
-          {[
-            { name: "Overview", icon: LayoutDashboard, label: "Ерөнхий тойм" },
-            { name: "Sales", icon: ShoppingBag, label: "Борлуулалт" },
-            { name: "Finance", icon: Wallet, label: "Санхүү" },
-            { name: "Team", icon: Users, label: "Ажилтнууд" },
-            { name: "Reports", icon: BarChart3, label: "Тайлан" },
-            { name: "Settings", icon: Settings, label: "Тохиргоо" },
-          ].map((item) => (
-            <button
-              key={item.name}
-              onClick={() => setActiveNav(item.name)}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg text-sm font-medium transition-all group relative ${
-                activeNav === item.name 
-                  ? "text-[#C49A3C] bg-[#C49A3C]/5" 
-                  : "text-[#6B7A99] hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {activeNav === item.name && (
-                <motion.div 
-                  layoutId="sidebar-active"
-                  className="absolute left-0 top-2 bottom-2 w-1 bg-[#C49A3C] rounded-r-full"
-                />
-              )}
-              <item.icon className={`w-5 h-5 ${activeNav === item.name ? "text-[#C49A3C]" : "group-hover:text-white"}`} />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        <NavItems />
 
         <div className="p-6 border-t border-white/5">
           <div className="flex items-center gap-3">
@@ -133,33 +165,41 @@ export default function InternalSystemDemo() {
       {/* Main Content */}
       <main className="flex-1 min-h-screen relative overflow-y-auto">
         {/* Demo Banner */}
-        <div className="sticky top-0 z-[60] w-full bg-[#0D1526]/80 backdrop-blur-md border-b border-[#C49A3C]/20 py-3 px-8 flex items-center justify-between">
-          <div className="flex items-center gap-3 text-xs font-bold tracking-wide">
-            <span className="text-[#C49A3C]">⚡ Cornerstone AI</span>
-            <span className="text-white/40">—</span>
-            <span className="text-white/80">Таны компанид зориулсан ухаалаг систем</span>
+        <div className="sticky top-0 z-[60] w-full bg-[#0D1526]/80 backdrop-blur-md border-b border-[#C49A3C]/20 py-3 px-4 md:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-3 text-[10px] md:text-xs font-bold tracking-wide overflow-hidden">
+            <span className="text-[#C49A3C] whitespace-nowrap">⚡ Cornerstone AI</span>
+            <span className="text-white/40 hidden sm:inline">—</span>
+            <span className="text-white/80 truncate">Таны компанид зориулсан ухаалаг систем</span>
           </div>
           <a 
             href="https://cornerstoneai.dev/digitalcard" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="bg-[#C49A3C] text-stealth-black px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#D4AA4C] transition-colors"
+            className="bg-[#C49A3C] text-stealth-black px-3 md:px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider hover:bg-[#D4AA4C] transition-colors whitespace-nowrap"
           >
             Үнэ авах →
           </a>
         </div>
 
         {/* Top Bar */}
-        <header className="px-8 py-8 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-1">Ерөнхий тойм</h2>
-            <p className="text-sm text-[#6B7A99]">Сайн байна уу, Boogii ✦</p>
-          </div>
+        <header className="px-4 md:px-8 py-6 md:py-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 bg-[#111827] border border-white/5 rounded-lg text-xs font-medium text-[#6B7A99] hover:text-white transition-colors">
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 bg-[#111827] border border-white/5 rounded-lg text-[#6B7A99] hover:text-white lg:hidden"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold mb-1">Ерөнхий тойм</h2>
+              <p className="text-xs md:text-sm text-[#6B7A99]">Сайн байна уу, Boogii ✦</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 md:gap-4">
+            <button className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#111827] border border-white/5 rounded-lg text-xs font-medium text-[#6B7A99] hover:text-white transition-colors">
               <Calendar className="w-4 h-4" /> 2024 оны 11-р сар
             </button>
-            <div className="flex items-center gap-3 pl-4 border-l border-white/5">
+            <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-4 border-l border-white/5">
               <button className="relative p-2 bg-[#111827] border border-white/5 rounded-lg text-[#6B7A99] hover:text-white transition-colors">
                 <Bell className="w-4 h-4" />
                 <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-[#EF4444] rounded-full" />
@@ -169,9 +209,9 @@ export default function InternalSystemDemo() {
           </div>
         </header>
 
-        <div className="px-8 pb-12 space-y-8">
+        <div className="px-4 md:px-8 pb-12 space-y-6 md:space-y-8">
           {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
               { label: "Нийт Орлого", value: "₮284,500,000", change: "+12.5% ↑", color: "gold", icon: Wallet },
               { label: "Борлуулалт", value: "1,847", change: "+8.2% ↑", color: "blue", icon: ShoppingBag },
@@ -209,17 +249,17 @@ export default function InternalSystemDemo() {
           </div>
 
           {/* Charts Row */}
-          <div className="grid lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Area Chart */}
-            <div className="lg:col-span-7 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-8 rounded-2xl">
-              <div className="flex items-center justify-between mb-8">
+            <div className="lg:col-span-7 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-4 md:p-8 rounded-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <h3 className="text-lg font-bold">Сарын Борлуулалт & Орлого</h3>
                 <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest">
                   <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#C49A3C]" /> Орлого</div>
                   <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#3B82F6]" /> Зардал</div>
                 </div>
               </div>
-              <div className="h-[300px] w-full">
+              <div className="h-[250px] md:h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={salesData}>
                     <defs>
@@ -260,9 +300,9 @@ export default function InternalSystemDemo() {
             </div>
 
             {/* Donut Chart */}
-            <div className="lg:col-span-5 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-8 rounded-2xl">
+            <div className="lg:col-span-5 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-4 md:p-8 rounded-2xl">
               <h3 className="text-lg font-bold mb-8">Борлуулалтын сувгууд</h3>
-              <div className="h-[240px] w-full relative">
+              <div className="h-[200px] md:h-[240px] w-full relative">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -303,15 +343,15 @@ export default function InternalSystemDemo() {
           </div>
 
           {/* Table & Financial Row */}
-          <div className="grid lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* KPI Table */}
-            <div className="lg:col-span-7 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-8 rounded-2xl">
+            <div className="lg:col-span-7 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-4 md:p-8 rounded-2xl overflow-hidden">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-lg font-bold">Ажилтны KPI</h3>
                 <button className="text-[#C49A3C] text-xs font-bold hover:underline">Бүгдийг харах</button>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="text-left border-b border-white/5">
                       <th className="pb-4 text-[10px] uppercase tracking-widest text-[#6B7A99]">Нэр</th>
@@ -362,7 +402,7 @@ export default function InternalSystemDemo() {
             </div>
 
             {/* Financial Overview */}
-            <div className="lg:col-span-5 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-8 rounded-2xl">
+            <div className="lg:col-span-5 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-4 md:p-8 rounded-2xl">
               <h3 className="text-lg font-bold mb-8">Орлого & Зарлага</h3>
               <div className="space-y-6 mb-10">
                 {financialSummary.map((item) => (
@@ -405,9 +445,9 @@ export default function InternalSystemDemo() {
           </div>
 
           {/* Activity & AI Row */}
-          <div className="grid lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Activity Feed */}
-            <div className="lg:col-span-7 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-8 rounded-2xl">
+            <div className="lg:col-span-7 bg-[#111827]/60 backdrop-blur-xl border border-white/5 p-4 md:p-8 rounded-2xl">
               <h3 className="text-lg font-bold mb-8">Сүүлийн үйл ажиллагаа</h3>
               <div className="space-y-8 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-white/5">
                 {[
@@ -431,7 +471,7 @@ export default function InternalSystemDemo() {
             </div>
 
             {/* AI Insights */}
-            <div className="lg:col-span-5 bg-[#111827]/60 backdrop-blur-xl border border-[#C49A3C]/20 p-8 rounded-2xl relative overflow-hidden">
+            <div className="lg:col-span-5 bg-[#111827]/60 backdrop-blur-xl border border-[#C49A3C]/20 p-4 md:p-8 rounded-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#C49A3C]/5 rounded-full -mr-16 -mt-16 blur-3xl" />
               <div className="flex items-center gap-3 mb-8">
                 <div className="p-2 rounded-lg bg-[#C49A3C]/10">
