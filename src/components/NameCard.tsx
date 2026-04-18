@@ -102,7 +102,7 @@ export default function NameCard() {
   };
 
   const saveContact = () => {
-    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:L.Bolor-Erdene\nN:Bolor-Erdene;L.;;;\nTITLE:Founder & CEO\nORG:Cornerstone AI\nTEL;TYPE=CELL:+97695079599\nEMAIL:boogiilive@gmail.com\nURL:https://cornerstoneai.dev\nX-SOCIALPROFILE;type=facebook:https://www.facebook.com/pip.boogii\nEND:VCARD`;
+    const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:L.Bolor-Erdene\nN:Bolor-Erdene;L.;;;\nTITLE:Founder & CEO\nORG:Cornerstone AI\nTEL;TYPE=CELL:+97695076599\nEMAIL:boogiilive@gmail.com\nURL:https://cornerstoneai.dev\nX-SOCIALPROFILE;type=facebook:https://www.facebook.com/pip.boogii\nEND:VCARD`;
     const blob = new Blob([vcard], { type: 'text/vcard' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -413,7 +413,7 @@ export default function NameCard() {
             <div className="card-divider"></div>
 
             <div className="card-contacts">
-              <div className="contact-item" onClick={() => copyToClipboard('+976 9507 9599')}>
+              <a href="tel:+97695076599" className="contact-item">
                 <div className="contact-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" strokeWidth="1.5">
                     <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01z"/>
@@ -421,11 +421,11 @@ export default function NameCard() {
                 </div>
                 <div>
                   <div className="contact-label">Утас</div>
-                  <div className="contact-value">+976 9507 9599</div>
+                  <div className="contact-value">+976 9507 6599</div>
                 </div>
-              </div>
+              </a>
 
-              <div className="contact-item" onClick={() => copyToClipboard('boogiilive@gmail.com')}>
+              <a href="mailto:boogiilive@gmail.com" className="contact-item">
                 <div className="contact-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" strokeWidth="1.5">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -436,7 +436,7 @@ export default function NameCard() {
                   <div className="contact-label">Имэйл</div>
                   <div className="contact-value">boogiilive@gmail.com</div>
                 </div>
-              </div>
+              </a>
 
               <a href="https://cornerstoneai.dev" target="_blank" rel="noopener noreferrer" className="contact-item">
                 <div className="contact-icon">
@@ -474,7 +474,7 @@ export default function NameCard() {
         </div>
 
         <div className="actions">
-          <a href="tel:+97695079599" className="btn btn-primary">
+          <a href="tel:+97695076599" className="btn btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01z"/>
             </svg>
