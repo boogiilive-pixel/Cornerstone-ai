@@ -15,7 +15,8 @@ export default function CaseStudies() {
     { label: language === 'mn' ? "Бүгд" : "All", value: "All" },
     { label: language === 'mn' ? "AI Платформ" : "AI Platform", value: "AI" },
     { label: language === 'mn' ? "Мобайл" : "Mobile", value: "Mobile" },
-    { label: language === 'mn' ? "Вэбсайт" : "Website", value: "Website" }
+    { label: language === 'mn' ? "Вэбсайт" : "Website", value: "Website" },
+    { label: language === 'mn' ? "Платформ" : "Platform", value: "Platform" }
   ];
 
   const cases = [
@@ -105,15 +106,15 @@ export default function CaseStudies() {
     },
     {
       id: 7,
-      category: "Mobile",
-      title: { mn: "Фитнесс Трэкэр Апп", en: "Fitness Tracker App" },
+      category: "Platform",
+      title: { mn: "eCard.mn - Онлайн нэрийн хуудас", en: "eCard.mn - Online Business Card" },
       description: { 
-        mn: "Хэрэглэгчийн идэвх хянах ухаалаг гар утасны аппликейшн.", 
-        en: "Smart mobile application for tracking user activity." 
+        mn: "Бизнесийн нэрийн хуудсыг онлайнаар үүсгэх, удирдах, хуваалцах нэгдсэн платформ.", 
+        en: "Integrated platform for creating, managing, and sharing business cards online." 
       },
-      image: "https://picsum.photos/seed/fitness-app/800/1200",
-      link: "#",
-      stack: ["Swift", "HealthKit"]
+      image: "https://lh3.googleusercontent.com/d/1rwb5CuSI3D6v8Wui8OgyguDKZfSl7omw",
+      link: "https://ecard.mn",
+      stack: ["React", "Firebase", "QR Code"]
     }
   ];
 
