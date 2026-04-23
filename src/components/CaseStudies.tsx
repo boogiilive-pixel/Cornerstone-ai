@@ -81,6 +81,18 @@ export default function CaseStudies() {
       stack: ["Next.js", "Tailwind"]
     },
     {
+      id: 9,
+      category: "Platform",
+      title: { mn: "Sellbot.mn - Чатын платформ", en: "Sellbot.mn - Chat Platform" },
+      description: { 
+        mn: "Мессенжер чатбот ухаалаг платформ болон автомат борлуулалтын систем.", 
+        en: "Messenger chatbot intelligent platform and automated sales system." 
+      },
+      image: "https://lh3.googleusercontent.com/d/1BmKvE4yWVjbvxTx8dxw3SP4rgR53nVjV",
+      link: "https://sellbot.mn",
+      stack: ["AI", "Messenger", "Node.js"]
+    },
+    {
       id: 5,
       category: "Platform",
       title: { mn: "Онлайн дэлгүүр", en: "Online Store" },
