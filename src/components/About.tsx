@@ -6,6 +6,27 @@ import ScrollToTop from "./ScrollToTop";
 import ScrollToHashElement from "./ScrollToHashElement";
 import { useLanguage } from "../translations";
 
+const HUMAN_TEAM = [
+  {
+    name: "Б. Энхжаргал",
+    role: "Chief Operating Officer",
+    bio: "Cornerstone AI-ийн өдөр тутмын үйл ажиллагаа, үйлчлүүлэгчийн харилцаа болон төслийн удирдлагыг хариуцдаг. Клиент бүрт чанартай, цаг хугацаандаа хүргэгдэх шийдлийг баталгаажуулах нь түүний гол үүрэг. Үйл ажиллагааны үр ашгийг нэмэгдүүлж, багийн ажлын урсгалыг оновчтой зохион байгуулахад мэргэшсэн.",
+    image: "https://lh3.googleusercontent.com/d/1Ozd--nQsyc4jwQXb0uCMFcO5oMsIjEBa",
+  },
+  {
+    name: "Л. Болорсайхан",
+    role: "Lead Full-Stack Developer",
+    bio: "Cornerstone AI-ийн клиент төслүүдийн техникийн архитектур, хөгжүүлэлтийг удирддаг. React, Next.js, Node.js зэрэг орчин үеийн вэб технологиуд дээр мэргэшсэн. Erdem AI agent-тай хамтран ажиллаж, production-grade веб платформ болон AI-powered системүүдийг хөгжүүлэхэд манлайлагч үүрэг гүйцэтгэдэг.",
+    image: "https://lh3.googleusercontent.com/d/1BSU6M-Jsv78vkHCY76zZs_1nL36D_drA",
+  },
+  {
+    name: "Б. Дөлгөөн",
+    role: "Junior Brand Designer",
+    bio: "Cornerstone AI болон түүний клиентүүдийн визуал брэндинг, UI дизайн, нийгмийн сүлжээний контентыг бүтээдэг. Dalai AI agent-тай хамтран ажиллаж, брэндийн хэв маяг, дизайн системийг хөгжүүлэхэд хувь нэмрээ оруулдаг. Орчин үеийн дизайны чиг хандлага, хэрэглэгчийн туршлагын чиглэлээр суралцаж буй идэвхтэй бүтээгч.",
+    image: "https://lh3.googleusercontent.com/d/1BKdjGbOuqYnGLzX5zmM2Px7dOh462ntV",
+  },
+];
+
 const AGENTS = [
   {
     id: "atlas",
@@ -224,6 +245,51 @@ export default function About() {
             </div>
           </div>
         </motion.div>
+
+        {/* Human Team Members */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+          {HUMAN_TEAM.map((member, idx) => (
+            <motion.div
+              key={member.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}
+              className="group p-8 rounded-3xl glass border-white/5 hover:border-gold-500/20 transition-all duration-500 relative overflow-hidden flex flex-col items-center text-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-gold-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="relative z-10 w-full">
+                {/* Profile Image Wrapper */}
+                <div className="relative mx-auto mb-6 group/member">
+                  <div className="w-32 h-32 rounded-2xl overflow-hidden border-2 border-gold-500/20 bg-navy-800 z-10 relative">
+                    <img 
+                      src={member.image} 
+                      alt={member.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover grayscale group-hover/member:grayscale-0 transition-all duration-700 group-hover/member:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.name}`;
+                      }}
+                    />
+                  </div>
+                  {/* Decorative frames for members */}
+                  <div className="absolute -top-2 -left-2 w-10 h-10 border-t-2 border-l-2 border-gold-500/20 rounded-tl-xl z-0" />
+                  <div className="absolute -bottom-2 -right-2 w-10 h-10 border-b-2 border-r-2 border-gold-500/20 rounded-br-xl z-0" />
+                </div>
+
+                <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
+                <div className="text-gold-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
+                  {member.role}
+                </div>
+                
+                <p className="text-sm text-white/50 leading-relaxed line-clamp-6 group-hover:line-clamp-none transition-all duration-500">
+                  {member.bio}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* AI Agents divider */}
         <div className="flex items-center gap-8 mb-16">
