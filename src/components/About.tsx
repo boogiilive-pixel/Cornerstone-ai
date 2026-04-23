@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
@@ -404,9 +406,17 @@ export default function About() {
         </div>
 
         <div className="mt-32 text-center">
-          <p className="text-xs tracking-[0.3em] text-white/20 uppercase">
+          <p className="text-xs tracking-[0.3em] text-white/20 uppercase mb-8">
             Built on Intelligence — <span className="text-gold-500/40">cornerstoneai.dev</span>
           </p>
+          
+          <Link 
+            to="/#cases"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gold-500/10 border border-gold-500/20 text-gold-500 text-sm font-bold hover:bg-gold-500/20 transition-all group"
+          >
+            {language === 'mn' ? "Хийсэн ажлуудтай танилцах" : "View Our Work"}
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
         </div>
       </main>
 
