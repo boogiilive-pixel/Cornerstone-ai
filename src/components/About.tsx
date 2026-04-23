@@ -220,25 +220,25 @@ export default function About() {
                 <h2 className="text-3xl font-serif font-bold text-white">Л.Болор-Эрдэнэ</h2>
                 <span className="text-white/40">— Boogii</span>
                 <span className="px-4 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-500 text-[10px] font-bold uppercase tracking-widest">
-                  Founder & CEO
+                  {language === 'mn' ? 'Үүсгэн байгуулагч & Гүйцэтгэх захирал' : 'Founder & CEO'}
                 </span>
               </div>
               
               <p className="text-white/60 leading-relaxed mb-10 max-w-2xl">
                 {language === 'mn'
-                  ? "Cornerstone AI-г үүсгэн байгуулагч. AI шийдэл, вэб болон мобайл хөгжүүлэлт, брэнд стратегийн чиглэлээр Монголын бизнесүүдийг дэмжиж, технологийн хүчээр ирээдүйг бүтээдэг."
-                  : "Founder of Cornerstone AI. Supporting Mongolian businesses through AI solutions, web and mobile development, and brand strategy, building the future with the power of technology."}
+                  ? "Cornerstone AI-г үүсгэн байгуулагч бөгөөд компанийн стратеги, бүтээгдэхүүний чиглэлийг тодорхойлогч. AI шийдэл, вэб болон мобайл хөгжүүлэлт, брэнд стратегийн чиглэлээр Монголын бизнесүүдийг дэмжиж, технологийн хүчээр ирээдүйг бүтээдэг. Түүний хувьд технологи бол зорилго биш — хэрэгсэл. Жинхэнэ үнэ цэн нь зөв асуултыг асууж, бизнесийн бодит хэрэгцээнд нийцсэн шийдлийг бүтээхэд оршдог гэж үздэг. Энэ философи нь Cornerstone AI-ийн танилцуулж буй бүх шийдлийн үндэс суурь болдог."
+                  : "Founder of Cornerstone AI, defining the company's strategy and product direction. Supporting Mongolian businesses through AI solutions, web and mobile development, and brand strategy, building the future with the power of technology. For him, technology is not just a goal — it's a tool. He believes true value lies in asking the right questions and creating solutions that meet real business needs. This philosophy is the foundation of all solutions presented by Cornerstone AI."}
               </p>
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-4">
+              <div className="flex flex-wrap justify-center md:justify-start gap-3">
                 {[
-                  { num: "6+", label: language === 'mn' ? "Платформ" : "Platforms" },
+                  { num: "9+", label: language === 'mn' ? "Платформ" : "Platforms" },
                   { num: "AI", label: language === 'mn' ? "Чиглэл" : "Focus" },
                   { num: "MN", label: language === 'mn' ? "Зах зээл" : "Market" },
                 ].map((s) => (
-                  <div key={s.label} className="px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-center min-w-[120px]">
-                    <div className="text-3xl font-bold text-white mb-1">{s.num}</div>
-                    <div className="text-[10px] uppercase tracking-widest text-white/40">{s.label}</div>
+                  <div key={s.label} className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-center min-w-[100px]">
+                    <div className="text-xl font-bold text-white mb-0.5">{s.num}</div>
+                    <div className="text-[9px] uppercase tracking-widest text-white/40">{s.label}</div>
                   </div>
                 ))}
               </div>
