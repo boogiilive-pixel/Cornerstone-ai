@@ -63,9 +63,9 @@ export default function GooChat() {
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData.error === "GEMINI_API_KEY_MISSING") {
-          throw new Error(errorData.instruction || errorData.details || "AI системийн түлхүүр (GEMINI_API_KEY) тохируулагдаагүй байна.");
+          throw new Error(errorData.details || "Google AI түлхүүр (GEMINI_API_KEY) тохируулагдаагүй байна.");
         }
-        throw new Error(errorData.error || "Chat request failed");
+        throw new Error(errorData.error || "Request failed");
       }
 
       const data = await response.json();
