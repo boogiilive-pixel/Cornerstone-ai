@@ -55,29 +55,30 @@ async function startServer() {
       for (const modelName of modelNames) {
         try {
           console.log(`[SERVER] Trying model: ${modelName}`);
-          const model = genAI.getGenerativeModel({ 
-            model: modelName,
-            systemInstruction: {
-              role: "system",
-              parts: [{
-                text: `
-              Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
-              
-              ХАРИЛЦААНЫ ДҮРЭМ:
-              1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-              2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
-              3. Хариулт нь товч бөгөөд тодорхой байна.
-              
-              ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-              - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-              - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
-
-              Cornerstone AI Үйлчилгээнүүд:
-              - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
-            `}]
-            },
-          }, { apiVersion: "v1beta" });
           
+          // Standard request parameters
+          const modelParams: any = { 
+            model: modelName
+          };
+
+          // Try to include system instruction if possible
+          const systemText = `
+            Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
+            
+            ХАРИЛЦААНЫ ДҮРЭМ:
+            1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
+            2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
+            3. Хариулт нь товч бөгөөд тодорхой байна.
+            
+            ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
+            - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
+            - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
+
+            Cornerstone AI Үйлчилгээнүүд:
+            - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
+          `;
+
+          // Formation of tools
           const tools: any = [{
             functionDeclarations: [{
               name: "sendLeadInformation",
@@ -95,10 +96,12 @@ async function startServer() {
             }]
           }];
 
-          // Format history
+          const model = genAI.getGenerativeModel(modelParams);
+
+          // Build history carefully
           const history = (messages || [])
-            .filter((m: any, i: number) => i !== 0) // Skip first greeting
-            .slice(0, -1)
+            .filter((m: any, i: number) => i !== 0) // Skip greeting
+            .slice(0, -1) // All except current
             .map((m: any) => ({
               role: m.role === "user" ? "user" : "model",
               parts: [{ text: m.text }],
@@ -106,26 +109,41 @@ async function startServer() {
 
           const lastMessage = messages[messages.length - 1].text;
 
-          const chat = model.startChat({
-            history,
-            tools,
-          });
-
-          const result = await chat.sendMessage(lastMessage);
-          const response = await result.response;
-          
-          const functionCalls = response.functionCalls();
-          if (functionCalls && functionCalls.length > 0) {
-            const call = functionCalls[0];
-            return res.json({ 
-              functionCall: {
-                name: call.name,
-                args: call.args
-              }
+          // Try chat with all features
+          try {
+            const chat = model.startChat({
+              history,
+              tools,
+              systemInstruction: systemText
             });
-          }
 
-          return res.json({ text: response.text() });
+            const result = await chat.sendMessage(lastMessage);
+            const response = await result.response;
+            
+            const functionCalls = response.functionCalls();
+            if (functionCalls && functionCalls.length > 0) {
+              const call = functionCalls[0];
+              return res.json({ 
+                functionCall: {
+                  name: call.name,
+                  args: call.args
+                }
+              });
+            }
+
+            return res.json({ text: response.text() });
+          } catch (chatErr: any) {
+            console.warn(`[SERVER] Enhanced chat failed for ${modelName}, retrying simple:`, chatErr.message);
+            
+            // Fallback: Simple generateContent without tools/systemInstruction if they cause 400
+            const simpleResult = await model.generateContent({
+              contents: [
+                { role: "user", parts: [{ text: systemText + "\n\nUser: " + lastMessage }] }
+              ]
+            });
+            const simpleResponse = await simpleResult.response;
+            return res.json({ text: simpleResponse.text() });
+          }
         } catch (err: any) {
           console.warn(`[SERVER] Model ${modelName} failed:`, err.message || err);
           lastError = err;
