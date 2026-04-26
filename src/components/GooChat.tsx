@@ -58,59 +58,55 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      // Use the stable model name
-      const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-      // Format history (skipping the first greeting message for valid model format)
-      const chat = model.startChat({
-        history: newMessages.slice(1, -1).map(m => ({
-          role: m.role === "model" ? "model" : "user",
-          parts: [{ text: m.text }]
-        })),
-        systemInstruction: {
-          parts: [{
-            text: `
-          Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
-          
-          ХАРИЛЦААНЫ ДҮРЭМ:
-          1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-          2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
-          3. Хариулт нь товч бөгөөд тодорхой байна.
-          
-          ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-          - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-          - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
-
-          Cornerstone AI Үйлчилгээнүүд:
-          - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
-        `}]
-        },
-        tools: [
-          {
-            functionDeclarations: [
-              {
-                name: "sendLeadInformation",
-                description: "Sends user contact information (lead) to Cornerstone AI team.",
-                parameters: {
-                  type: Type.OBJECT,
-                  properties: {
-                    name: { type: Type.STRING, description: "User's full name" },
-                    phone: { type: Type.STRING, description: "User's phone number" },
-                    email: { type: Type.STRING, description: "User's email address" },
-                    message: { type: Type.STRING, description: "Brief description of the request" }
-                  },
-                  required: ["name", "phone", "email", "message"]
-                }
-              }
-            ]
+      // Format tools for function calling
+      const tools = [{
+        functionDeclarations: [{
+          name: "sendLeadInformation",
+          description: "Sends user contact information (lead) to Cornerstone AI team.",
+          parameters: {
+            type: Type.OBJECT,
+            properties: {
+              name: { type: Type.STRING, description: "User's full name" },
+              phone: { type: Type.STRING, description: "User's phone number" },
+              email: { type: Type.STRING, description: "User's email address" },
+              message: { type: Type.STRING, description: "Brief description of the request" }
+            },
+            required: ["name", "phone", "email", "message"]
           }
-        ] as any
+        }]
+      }];
+
+      // Format history into contents
+      // Each content should have a role and parts
+      const contents = newMessages.slice(1).map(m => ({
+        role: m.role === "model" ? "model" : "user",
+        parts: [{ text: m.text }]
+      }));
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents,
+        config: {
+          systemInstruction: `
+            Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
+            
+            ХАРИЛЦААНЫ ДҮРЭМ:
+            1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
+            2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
+            3. Хариулт нь товч бөгөөд тодорхой байна.
+            
+            ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
+            - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
+            - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
+
+            Cornerstone AI Үйлчилгээнүүд:
+            - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
+          `,
+          tools: tools as any,
+        }
       });
 
-      const result = await chat.sendMessage(userMessage);
-      const response = result.response;
-      
-      const functionCalls = response.functionCalls();
+      const functionCalls = response.functionCalls;
       if (functionCalls && functionCalls.length > 0) {
         const call = functionCalls[0];
         if (call.name === "sendLeadInformation") {
@@ -123,9 +119,10 @@ export default function GooChat() {
             
           setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
         }
+      } else if (response.text) {
+        setMessages(prev => [...prev, { role: "model", text: response.text! }]);
       } else {
-        const text = response.text();
-        setMessages(prev => [...prev, { role: "model", text }]);
+        throw new Error("AI-аас хариу ирсэнгүй.");
       }
     } catch (error: any) {
       console.error("GooChat Error:", error);
