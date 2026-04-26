@@ -60,23 +60,33 @@ export default function GooChat() {
         body: JSON.stringify({ messages: newMessages }),
       });
 
+      const contentType = response.headers.get("content-type");
+      let data: any;
+
       if (!response.ok) {
-        let errorMsg = "Холболтын алдаа гарлаа.";
-        try {
-          const errorData = await response.json();
-          if (errorData.error === "GEMINI_API_KEY_MISSING") {
-            errorMsg = errorData.details || "Google AI түлхүүр тохируулагдаагүй байна.";
-          } else {
-            errorMsg = errorData.error || errorMsg;
+        let errorMsg = `Сервертэй холбогдоход алдаа гарлаа (Status: ${response.status})`;
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const errorData = await response.json();
+            if (errorData.error === "GEMINI_API_KEY_MISSING") {
+              errorMsg = errorData.details || "Google AI түлхүүр тохируулагдаагүй байна.";
+            } else {
+              errorMsg = errorData.error || errorMsg;
+            }
+          } catch (e) {
+            console.error("Error parsing error JSON:", e);
           }
-        } catch (e) {
-          // If response is not JSON (e.g. 502 Bad Gateway)
-          errorMsg = `Сервертэй холбогдоход алдаа гарлаа (Status: ${response.status})`;
         }
         throw new Error(errorMsg);
       }
 
-      const data = await response.json();
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text);
+        throw new Error(`Серверээс буруу хариу ирлээ (Type: ${contentType})`);
+      }
       
       if (data.functionCall && data.functionCall.name === "sendLeadInformation") {
         const { name, phone, email, message } = data.functionCall.args;
