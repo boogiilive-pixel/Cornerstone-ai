@@ -34,132 +34,64 @@ async function startServer() {
   // API Route for Gemini Chat
   app.post("/api/chat", async (req, res) => {
     const { messages } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY || 
-                   process.env.GOOGLE_API_KEY || 
-                   process.env.APP_GEMINI_KEY || 
-                   process.env.API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
-    if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.trim() === "" || apiKey === "undefined") {
-      console.error("[AUTH_ERROR] API Key is missing");
-      return res.status(500).json({ 
-        error: "API Key missing. Please set GEMINI_API_KEY in Secrets." 
-      });
+    if (!apiKey) {
+      return res.status(500).json({ error: "API Key missing. Please set GEMINI_API_KEY." });
     }
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      // We will try multiple models in case one is not enabled
-      const modelNames = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro"];
-      let lastError = null;
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        systemInstruction: "Та бол Cornerstone AI компанийн мэргэжлийн AI агент 'Гоо' юм. Зөвхөн манай компани, үйлчилгээнүүдтэй холбоотой мэдээлэл өгнө. Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал Нэр, Утас, Имэйлийг нь асууж авна. Мэдээллийг авсны дараа 'sendLeadInformation' функцийг ашиглан илгээнэ."
+      });
 
-      for (const modelName of modelNames) {
-        try {
-          console.log(`[SERVER] Trying model: ${modelName}`);
-          
-          // Standard request parameters
-          const modelParams: any = { 
-            model: modelName
-          };
-
-          // Try to include system instruction if possible
-          const systemText = `
-            Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
-            
-            ХАРИЛЦААНЫ ДҮРЭМ:
-            1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-            2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
-            3. Хариулт нь товч бөгөөд тодорхой байна.
-            
-            ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-            - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-            - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
-
-            Cornerstone AI Үйлчилгээнүүд:
-            - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
-          `;
-
-          // Formation of tools
-          const tools: any = [{
-            functionDeclarations: [{
-              name: "sendLeadInformation",
-              description: "Sends user contact information (lead) to Cornerstone AI team.",
-              parameters: {
-                type: SchemaType.OBJECT,
-                properties: {
-                  name: { type: SchemaType.STRING, description: "User's full name" },
-                  phone: { type: SchemaType.STRING, description: "User's phone number" },
-                  email: { type: SchemaType.STRING, description: "User's email address" },
-                  message: { type: SchemaType.STRING, description: "Brief description of the request" }
-                },
-                required: ["name", "phone", "email", "message"]
-              }
-            }]
-          }];
-
-          const model = genAI.getGenerativeModel(modelParams);
-
-          // Build history carefully
-          const history = (messages || [])
-            .filter((m: any, i: number) => i !== 0) // Skip greeting
-            .slice(0, -1) // All except current
-            .map((m: any) => ({
-              role: m.role === "user" ? "user" : "model",
-              parts: [{ text: m.text }],
-            }));
-
-          const lastMessage = messages[messages.length - 1].text;
-
-          // Try chat with all features
-          try {
-            const chat = model.startChat({
-              history,
-              tools,
-              systemInstruction: systemText
-            });
-
-            const result = await chat.sendMessage(lastMessage);
-            const response = await result.response;
-            
-            const functionCalls = response.functionCalls();
-            if (functionCalls && functionCalls.length > 0) {
-              const call = functionCalls[0];
-              return res.json({ 
-                functionCall: {
-                  name: call.name,
-                  args: call.args
-                }
-              });
-            }
-
-            return res.json({ text: response.text() });
-          } catch (chatErr: any) {
-            console.warn(`[SERVER] Enhanced chat failed for ${modelName}, retrying simple:`, chatErr.message);
-            
-            // Fallback: Simple generateContent without tools/systemInstruction if they cause 400
-            const simpleResult = await model.generateContent({
-              contents: [
-                { role: "user", parts: [{ text: systemText + "\n\nUser: " + lastMessage }] }
-              ]
-            });
-            const simpleResponse = await simpleResult.response;
-            return res.json({ text: simpleResponse.text() });
+      const tools: any = [{
+        functionDeclarations: [{
+          name: "sendLeadInformation",
+          description: "Sends user contact information (lead) to Cornerstone AI team.",
+          parameters: {
+            type: SchemaType.OBJECT,
+            properties: {
+              name: { type: SchemaType.STRING },
+              phone: { type: SchemaType.STRING },
+              email: { type: SchemaType.STRING },
+              message: { type: SchemaType.STRING }
+            },
+            required: ["name", "phone", "email", "message"]
           }
-        } catch (err: any) {
-          console.warn(`[SERVER] Model ${modelName} failed:`, err.message || err);
-          lastError = err;
-          // Continue to next model if it's a 404/not found error
-          if (err.message?.includes("404") || err.message?.includes("not found")) {
-            continue;
+        }]
+      }];
+
+      const history = (messages || [])
+        .filter((_: any, i: number) => i !== 0) // Skip first greeting
+        .slice(0, -1)
+        .map((m: any) => ({
+          role: m.role === "user" ? "user" : "model",
+          parts: [{ text: m.text }],
+        }));
+
+      const lastMessage = messages[messages.length - 1].text;
+
+      const chat = model.startChat({ history, tools });
+      const result = await chat.sendMessage(lastMessage);
+      const response = result.response;
+      
+      const functionCalls = response.functionCalls();
+      if (functionCalls && functionCalls.length > 0) {
+        return res.json({ 
+          functionCall: {
+            name: functionCalls[0].name,
+            args: functionCalls[0].args
           }
-          // If it's a different error (like 400 Bad Request about tools), we might need to stop,
-          // but let's try all models anyway.
-        }
+        });
       }
 
-      throw lastError || new Error("Бүх AI загварууд ажиллахгүй байна.");
+      return res.json({ text: response.text() });
     } catch (err: any) {
-      console.error("[SERVER] Chat Error:", err);
-      res.status(500).json({ error: "AI боловсруулалт хийхэд алдаа гарлаа: " + (err.message || "") });
+      console.error("[SERVER CHAT ERROR]", err);
+      res.status(500).json({ error: err.message || "AI processing failed" });
     }
   });
 
