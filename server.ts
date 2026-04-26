@@ -28,13 +28,21 @@ async function startServer() {
 
     if (isMissing) {
       const isVercel = process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined;
-      console.error(`[AUTH_ERROR] API Key is missing. Keys found: ${Object.keys(process.env).filter(k => k.includes("API") || k.includes("KEY") || k.includes("GEMINI")).join(", ")}`);
+      const foundKeys = Object.keys(process.env).filter(k => k.includes("API") || k.includes("KEY") || k.includes("GEMINI"));
+      
+      console.error(`[AUTH_ERROR] API Key is missing. Found similar keys: ${foundKeys.join(", ")}`);
       
       return res.status(500).json({ 
         error: "GEMINI_API_KEY_MISSING",
-        details: isVercel 
-          ? "Vercel Settings -> Environment Variables хэсэгт 'GEMINI_API_KEY' нэмээд Redeploy хийнэ үү." 
-          : "Таны илгээсэн зураг дээрх хамгийн доор байгаа 'Settings' (арааны зурагтай) товч дээр дараад, нээгдэх цонхны 'Secrets' таб дотор 'GEMINI_API_KEY' нэрээр түлхүүрээ нэмнэ үү."
+        details: `Google AI түлхүүр (GEMINI_API_KEY) олдсонгүй.`,
+        debugInfo: {
+          hasApiKey: !!process.env.API_KEY,
+          hasGeminiKey: !!process.env.GEMINI_API_KEY,
+          hasGoogleKey: !!process.env.GOOGLE_API_KEY,
+          similarKeysFound: foundKeys,
+          isVercel
+        },
+        instruction: "Settings -> Secrets хэсэгт 'GEMINI_API_KEY' нэрээр түлхүүрээ нэмээд хадгална уу."
       });
     }
 
