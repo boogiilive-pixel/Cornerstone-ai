@@ -76,7 +76,7 @@ async function startServer() {
               - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
             `}]
             },
-          });
+          }, { apiVersion: "v1beta" });
           
           const tools: any = [{
             functionDeclarations: [{
