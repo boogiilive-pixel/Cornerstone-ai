@@ -32,8 +32,8 @@ async function startServer() {
   });
 
   // API Route for Gemini Chat
-  app.post("/api/chat", async (req, res) => {
-    console.log("[SERVER] Received chat request:", JSON.stringify(req.body).substring(0, 100));
+  app.post("/api/goo-chat", async (req, res) => {
+    console.log("[SERVER] Received chat request to /api/goo-chat:", JSON.stringify(req.body).substring(0, 100));
     const { messages } = req.body;
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
@@ -149,34 +149,10 @@ async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "custom",
+      appType: "spa",
     });
     
     app.use(vite.middlewares);
-    
-    // Catch-all for SPA in development
-    app.use(async (req, res, next) => {
-      if (req.method !== 'GET' || (req.headers.accept && !req.headers.accept.includes('text/html'))) {
-        return next();
-      }
-      
-      const url = req.originalUrl;
-      if (url.startsWith('/api')) return next();
-
-      try {
-        const templatePath = path.join(process.cwd(), "index.html");
-        if (!fs.existsSync(templatePath)) return next();
-
-        let template = fs.readFileSync(templatePath, "utf-8");
-        template = await vite.transformIndexHtml(url, template);
-        res.status(200).set({ "Content-Type": "text/html" }).end(template);
-      } catch (e) {
-        if (process.env.NODE_ENV !== "production") {
-          vite.ssrFixStacktrace(e as Error);
-        }
-        next(e);
-      }
-    });
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
