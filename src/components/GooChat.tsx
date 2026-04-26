@@ -63,7 +63,7 @@ export default function GooChat() {
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData.error === "GEMINI_API_KEY_MISSING") {
-          throw new Error("AI системийн түлхүүр (GEMINI_API_KEY) тохируулагдаагүй байна. Vercel-ийн Environment Variables хэсэгт түлхүүрээ нэмнэ үү.");
+          throw new Error(errorData.details || "AI системийн түлхүүр (GEMINI_API_KEY) тохируулагдаагүй байна.");
         }
         throw new Error(errorData.error || "Chat request failed");
       }
@@ -86,7 +86,10 @@ export default function GooChat() {
       }
     } catch (error: any) {
       console.error("GooChat Error:", error);
-      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
+      const errorMessage = error.message.includes("Google AI түлхүүр") 
+        ? error.message 
+        : "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
+      setMessages(prev => [...prev, { role: "model", text: errorMessage }]);
     } finally {
       setIsLoading(false);
     }

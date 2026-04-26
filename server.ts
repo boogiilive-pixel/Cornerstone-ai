@@ -26,10 +26,14 @@ async function startServer() {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
     if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.trim() === "") {
-      console.error("Missing GEMINI_API_KEY in environment variables.");
+      const isVercel = process.env.VERCEL === "1";
+      const location = isVercel ? "Vercel Settings -> Environment Variables" : "AI Studio Settings -> Secrets";
+      
+      console.error(`GEMINI_API_KEY is missing. Environment: ${isVercel ? 'Vercel' : 'AI Studio'}`);
+      
       return res.status(500).json({ 
         error: "GEMINI_API_KEY_MISSING",
-        details: "Vercel Settings -> Environment Variables хэсэгт GEMINI_API_KEY-ийг нэмнэ үү."
+        details: `Google AI түлхүүр тохируулагдаагүй байна. ${location} хэсэгт 'GEMINI_API_KEY' нэртэйгээр түлхүүрээ нэмээд, төслөө дахин "Redeploy" хийнэ үү.`
       });
     }
 
