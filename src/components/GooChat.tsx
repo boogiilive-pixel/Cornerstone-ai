@@ -113,19 +113,22 @@ export default function GooChat() {
         }
       };
 
-      const history = newMessages
-        .slice(1) 
+      // Prepare conversation history for Gemini, ensuring alternating roles
+      const contents = newMessages
+        .filter((_, i) => i > 0 || messages[0].role === 'user') // Skip welcome message if role matches Gemini expectations
         .map(m => ({
-          role: m.role === "function" ? "model" : m.role, // Map function role to model for history if needed, but better to handle properly
+          role: m.role === "function" ? "model" : m.role,
           parts: [{ text: m.text }]
         }));
 
+      // If empty (welcome message skipped), add current
+      if (contents.length === 0) {
+        contents.push({ role: "user", parts: [{ text: userMessage }] });
+      }
+
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: [
-          ...history,
-          { role: "user", parts: [{ text: userMessage }] }
-        ],
+        contents,
         config: {
           systemInstruction,
           temperature: 0.5,
@@ -138,40 +141,31 @@ export default function GooChat() {
       });
 
       const functionCalls = response.functionCalls;
-      console.log("Gemini Response Function Calls:", functionCalls);
       
-      // Find the first lead information call and only process that one to avoid duplicates
-      const leadCall = functionCalls?.find(call => call.name === "sendLeadInformation");
-      
-      if (leadCall) {
-        console.log("Executing sendLeadInformation with args:", leadCall.args);
+      if (functionCalls?.some(call => call.name === "sendLeadInformation")) {
+        const leadCall = functionCalls.find(call => call.name === "sendLeadInformation")!;
         const { name, phone, email, message } = leadCall.args as any;
         const result = await sendLeadEmail(name, phone, email, message);
-        console.log("Lead email result:", result);
         
-        const secondResponse = await ai.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: [
-            ...history,
-            { role: "user", parts: [{ text: userMessage }] },
-            { role: "model", parts: [response.candidates[0].content.parts[0]] },
-            { 
-              role: "user", 
-              parts: [{ text: result.success ? "Мэдээллийг амжилттай илгээлээ." : `Мэдээлэл илгээхэд алдаа гарлаа: ${result.error}` }] 
-            }
-          ],
-          config: { systemInstruction, temperature: 0.5 }
-        });
-        
-        const finalResponse = secondResponse.text || (result.success ? "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно." : "Уучлаарай, техникийн саатал гарлаа.");
+        const finalResponse = result.success 
+          ? "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно. Баярлалаа!" 
+          : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Гэхдээ таны хүсэлтийг тэмдэглэж авлаа.";
+          
         setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
       } else {
-        const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа.";
+        const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа. Та асуултаа тодруулна уу.";
         setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
       }
     } catch (error: any) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
+      const errorMessage = error?.message || "";
+      let userFriendlyError = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
+      
+      if (errorMessage.includes("Invalid or missing GEMINI_API_KEY")) {
+        userFriendlyError = "AI систем түр ажиллагаагүй байна (API Key тохиргооны алдаа).";
+      }
+
+      setMessages(prev => [...prev, { role: "model", text: userFriendlyError }]);
     } finally {
       setIsLoading(false);
     }
