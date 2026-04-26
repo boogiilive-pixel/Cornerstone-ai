@@ -59,9 +59,13 @@ async function startServer() {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      let model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-      });
+      let model;
+      try {
+        // Force v1 API which often has more stable model associations for newer keys
+        model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
+      } catch (e) {
+        model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      }
 
       const tools: any = [
         {
@@ -124,9 +128,9 @@ async function startServer() {
         const result = await chat.sendMessage(lastMessage);
         response = await result.response;
       } catch (chatError: any) {
+        console.warn("Retrying with gemini-1.5-flash-latest due to error:", chatError.message);
         if (chatError.message?.includes("404") || chatError.message?.includes("not found")) {
-          console.warn("Model 1.5-flash not found, falling back to 1.5-pro");
-          model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+          model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
           const chat = model.startChat({
             history,
             tools,
