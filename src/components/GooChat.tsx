@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageCircle, X, Send, Bot, User, Loader2, Minimize2, Maximize2 } from "lucide-react";
-import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
+import { MessageCircle, X, Send, Bot, Loader2, Minimize2, Maximize2 } from "lucide-react";
+import { GoogleGenAI, Type } from "@google/genai";
 
 interface Message {
   role: "user" | "model" | "function";
@@ -67,61 +67,25 @@ export default function GooChat() {
         
         ХАРИЛЦААНЫ ДҮРЭМ:
         1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-        2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой. Та компанитай холбоотой асуултаа асууна уу." гэж маш эелдэгээр хариулна.
-        3. Хариулт нь маш товч бөгөөд тодорхой байна (Ихэвчлэн 1-3 өгүүлбэрт багтаах).
-        4. Найрсаг, инновацилаг, мэргэжлийн өнгө аясаар харилцана.
-        5. Хэрэв танд тодорхой мэдээлэл байхгүй бол Google Search ашиглан хайлт хийж хамгийн сүүлийн үеийн мэдээллийг олж өгч болно.
+        2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
+        3. Хариулт нь товч бөгөөд тодорхой байна.
         
         ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-        - Хэрэв хэрэглэгч ажил хийлгэх, хамтран ажиллах, эсвэл үнийн санал авах сонирхолтой байвал (нааштай хандвал) та заавал тэдний Нэр, Утасны дугаар, Имэйл хаягийг асууж авна.
-        - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг компани руу илгээнэ.
-        - Илгээсний дараа хэрэглэгчид "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно" гэж мэдэгдэнэ.
+        - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
+        - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглана.
 
         Cornerstone AI Үйлчилгээнүүд:
-        - AI автоматжуулалт болон AI агентууд
-        - Вэб хөгжүүлэлт (Next.js, React)
-        - Мобайл апп хөгжүүлэлт (Flutter)
-        - Бизнес аналитик (Cornerstone OS)
-        - SEO оновчлол
-        
-        Үнэ болон Багцууд:
-        1. Starter Foundation (₮1.5M+): Жижиг бизнес, танилцуулга вэб. Custom Дизайн, 5 хүртэлх хуудас, SEO суурь тохиргоо.
-        2. Growth Builder (₮3.5M+): Борлуулалт, систем интеграци. E-commerce, AI Чатбот интеграци, CRM холболт.
-        3. Enterprise Architect (Custom): Томоохон систем, AI автоматжуулалт. Custom Вэб/Апп, Бүрэн автоматжуулалт.
-        
-        Холбоо барих:
-        - Утас: +976 9507-6599
-        - Имэйл: boogiilive@gmail.com
-        - Хаяг: Улаанбаатар, Монгол
-        - Digital Card: /digitalcard
-        
-        Төслүүд: Mergejil.com, Mongol Mind, Sorilt.com, Suut Resort.
+        - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
       `;
 
-      const sendLeadInformation: FunctionDeclaration = {
-        name: "sendLeadInformation",
-        description: "Sends user contact information (lead) to Cornerstone AI team.",
-        parameters: {
-          type: Type.OBJECT,
-          properties: {
-            name: { type: Type.STRING, description: "User's full name" },
-            phone: { type: Type.STRING, description: "User's phone number" },
-            email: { type: Type.STRING, description: "User's email address" },
-            message: { type: Type.STRING, description: "Brief description of the user's request or project" }
-          },
-          required: ["name", "phone", "email", "message"]
-        }
-      };
-
-      // Prepare conversation history for Gemini, ensuring alternating roles
+      // Format contents for @google/genai
       const contents = newMessages
-        .filter((_, i) => i > 0 || messages[0].role === 'user') // Skip welcome message if role matches Gemini expectations
+        .filter((_, i) => i > 0 || messages[0].role === 'user')
         .map(m => ({
           role: m.role === "function" ? "model" : m.role,
           parts: [{ text: m.text }]
         }));
 
-      // If empty (welcome message skipped), add current
       if (contents.length === 0) {
         contents.push({ role: "user", parts: [{ text: userMessage }] });
       }
@@ -132,19 +96,29 @@ export default function GooChat() {
         config: {
           systemInstruction,
           temperature: 0.5,
-          tools: [
-            { googleSearch: {} },
-            { functionDeclarations: [sendLeadInformation] }
-          ],
-          toolConfig: { includeServerSideToolInvocations: true }
+          tools: [{
+            functionDeclarations: [{
+              name: "sendLeadInformation",
+              description: "Sends user contact information (lead) to Cornerstone AI team.",
+              parameters: {
+                type: Type.OBJECT,
+                properties: {
+                  name: { type: Type.STRING, description: "User's full name" },
+                  phone: { type: Type.STRING, description: "User's phone number" },
+                  email: { type: Type.STRING, description: "User's email address" },
+                  message: { type: Type.STRING, description: "Brief description of the request" }
+                },
+                required: ["name", "phone", "email", "message"]
+              }
+            }]
+          }]
         },
       });
 
       const functionCalls = response.functionCalls;
       
-      if (functionCalls?.some(call => call.name === "sendLeadInformation")) {
-        const leadCall = functionCalls.find(call => call.name === "sendLeadInformation")!;
-        const { name, phone, email, message } = leadCall.args as any;
+      if (functionCalls && functionCalls.length > 0 && functionCalls[0].name === "sendLeadInformation") {
+        const { name, phone, email, message } = functionCalls[0].args as any;
         const result = await sendLeadEmail(name, phone, email, message);
         
         const finalResponse = result.success 
@@ -158,14 +132,10 @@ export default function GooChat() {
       }
     } catch (error: any) {
       console.error("Chat Error:", error);
-      const errorMessage = error?.message || "";
-      let userFriendlyError = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
-      
-      if (errorMessage.includes("Invalid or missing GEMINI_API_KEY")) {
-        userFriendlyError = "AI систем түр ажиллагаагүй байна (API Key тохиргооны алдаа).";
-      }
-
-      setMessages(prev => [...prev, { role: "model", text: userFriendlyError }]);
+      const msg = error?.message || "";
+      let userMsg = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
+      if (msg.includes("GEMINI_API_KEY")) userMsg = "AI систем түр ажиллагаагүй байна (API Key алдаа).";
+      setMessages(prev => [...prev, { role: "model", text: userMsg }]);
     } finally {
       setIsLoading(false);
     }
