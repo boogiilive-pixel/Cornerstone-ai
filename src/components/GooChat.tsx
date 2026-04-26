@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Send, Bot, Loader2, Minimize2, Maximize2 } from "lucide-react";
-import { GoogleGenAI, Type } from "@google/genai";
 
 interface Message {
   role: "user" | "model" | "function";
@@ -55,64 +54,24 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      
-      const systemInstruction = `
-        Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
-        
-        ХАРИЛЦААНЫ ДҮРЭМ:
-        1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-        2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
-        3. Хариулт нь товч бөгөөд тодорхой байна.
-        
-        ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-        - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-        - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг илгээнэ.
-
-        Cornerstone AI Үйлчилгээнүүд:
-        - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
-      `;
-
-      // Filter and format history for Gemini
-      const chatContents = newMessages
-        .filter((m, i) => {
-          if (i === 0 && m.role === "model") return false; // Skip initial greeting as history
-          return true;
-        })
-        .map(m => ({
-          role: m.role as "user" | "model",
-          parts: [{ text: m.text }]
-        }));
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: chatContents,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-          tools: [{
-            functionDeclarations: [{
-              name: "sendLeadInformation",
-              description: "Sends user contact information (lead) to Cornerstone AI team.",
-              parameters: {
-                type: Type.OBJECT,
-                properties: {
-                  name: { type: Type.STRING, description: "User's full name" },
-                  phone: { type: Type.STRING, description: "User's phone number" },
-                  email: { type: Type.STRING, description: "User's email address" },
-                  message: { type: Type.STRING, description: "Brief description of the request" }
-                },
-                required: ["name", "phone", "email", "message"]
-              }
-            }]
-          }]
-        },
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: newMessages }),
       });
 
-      const functionCalls = response.functionCalls;
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.error === "GEMINI_API_KEY_MISSING") {
+          throw new Error("AI системийн түлхүүр (GEMINI_API_KEY) тохируулагдаагүй байна. Vercel-ийн Environment Variables хэсэгт түлхүүрээ нэмнэ үү.");
+        }
+        throw new Error(errorData.error || "Chat request failed");
+      }
+
+      const data = await response.json();
       
-      if (functionCalls && functionCalls.length > 0 && functionCalls[0].name === "sendLeadInformation") {
-        const { name, phone, email, message } = functionCalls[0].args as any;
+      if (data.functionCall && data.functionCall.name === "sendLeadInformation") {
+        const { name, phone, email, message } = data.functionCall.args;
         const result = await sendLeadEmail(name, phone, email, message);
         
         const finalResponse = result.success 
@@ -120,9 +79,10 @@ export default function GooChat() {
           : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Гэхдээ таны хүсэлтийг манай багт дамжууллаа.";
           
         setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
+      } else if (data.text) {
+        setMessages(prev => [...prev, { role: "model", text: data.text }]);
       } else {
-        const modelResponse = response.text || "Уучлаарай, би таны асуултыг ойлгосонгүй. Та асуултаа тодруулна уу.";
-        setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
+        throw new Error("Invalid response format from server");
       }
     } catch (error: any) {
       console.error("GooChat Error:", error);
