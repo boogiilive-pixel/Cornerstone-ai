@@ -23,17 +23,19 @@ async function startServer() {
   // API Route for Gemini Chat
   app.post("/api/chat", async (req, res) => {
     const { messages } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.API_KEY;
+    const isPlaceholder = apiKey === "MY_GEMINI_API_KEY" || apiKey === "YOUR_API_KEY_HERE";
 
-    if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.trim() === "") {
-      const isVercel = process.env.VERCEL === "1";
-      const location = isVercel ? "Vercel Settings -> Environment Variables" : "AI Studio Settings -> Secrets";
+    if (!apiKey || isPlaceholder || apiKey.trim() === "") {
+      const isVercel = process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined;
+      const location = isVercel ? "Vercel Dashboard (Settings -> Environment Variables)" : "AI Studio (Settings -> Secrets)";
       
-      console.error(`GEMINI_API_KEY is missing. Environment: ${isVercel ? 'Vercel' : 'AI Studio'}`);
+      console.error(`[AUTH_ERROR] GEMINI_API_KEY is missing. Env Keys Found: ${Object.keys(process.env).filter(k => !k.includes("SECRET") && !k.includes("KEY")).join(", ")}`);
       
       return res.status(500).json({ 
         error: "GEMINI_API_KEY_MISSING",
-        details: `Google AI түлхүүр тохируулагдаагүй байна. ${location} хэсэгт 'GEMINI_API_KEY' нэртэйгээр түлхүүрээ нэмээд, төслөө дахин "Redeploy" хийнэ үү.`
+        details: `Google AI түлхүүр (GEMINI_API_KEY) олдсонгүй. ${location} хэсэгт түлхүүрээ нэмээд "Redeploy" хийнэ үү.`,
+        env_debug: isVercel ? "vercel" : "ai-studio"
       });
     }
 
