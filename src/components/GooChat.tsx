@@ -55,11 +55,10 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      // Safely access GEMINI_API_KEY
-      const apiKey = (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : (window as any).process?.env?.GEMINI_API_KEY) || "";
+      const apiKey = process.env.GEMINI_API_KEY;
       
-      if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey.length < 10) {
-        throw new Error("GEMINI_API_KEY is missing or invalid.");
+      if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+        throw new Error("GEMINI_API_KEY_MISSING");
       }
 
       const ai = new GoogleGenAI({ apiKey });
@@ -80,40 +79,34 @@ export default function GooChat() {
         - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
       `;
 
-      // Format contents for @google/genai
-      // Strictly alternate roles, starting with 'user'
-      const contents = newMessages
+      // Strictly alternate user/model roles for contents
+      const chatContents = newMessages
         .filter((m, i) => {
-          // If first message is model, skip it to ensure we start with user
-          if (i === 0 && m.role === 'model') return false;
+          if (i === 0 && m.role === "model") return false; // Skip the initial system greeting
           return true;
         })
         .map(m => ({
-          role: m.role === "function" ? "model" as const : (m.role as "user" | "model"),
+          role: m.role === "user" ? "user" as const : "model" as const,
           parts: [{ text: m.text }]
         }));
 
-      if (contents.length === 0) {
-        contents.push({ role: "user", parts: [{ text: userMessage }] });
-      }
-
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents,
+        model: "gemini-flash-latest",
+        contents: chatContents,
         config: {
           systemInstruction,
-          temperature: 0.5,
+          temperature: 0.7,
           tools: [{
             functionDeclarations: [{
               name: "sendLeadInformation",
-              description: "Sends user contact information (lead) to Cornerstone AI team.",
+              description: "Sends user contact information to the team.",
               parameters: {
                 type: Type.OBJECT,
                 properties: {
-                  name: { type: Type.STRING, description: "User's full name" },
-                  phone: { type: Type.STRING, description: "User's phone number" },
-                  email: { type: Type.STRING, description: "User's email address" },
-                  message: { type: Type.STRING, description: "Brief description of the request" }
+                  name: { type: Type.STRING },
+                  phone: { type: Type.STRING },
+                  email: { type: Type.STRING },
+                  message: { type: Type.STRING }
                 },
                 required: ["name", "phone", "email", "message"]
               }
@@ -129,21 +122,22 @@ export default function GooChat() {
         const result = await sendLeadEmail(name, phone, email, message);
         
         const finalResponse = result.success 
-          ? "Мэдээллийг хүлээн авлаа, манай баг тантай удахгүй холбогдох болно. Баярлалаа!" 
-          : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Гэхдээ таны хүсэлтийг тэмдэглэж авлаа.";
+          ? "Баярлалаа! Таны мэдээллийг хүлээн авлаа. Манай баг тантай удахгүй холбогдох болно." 
+          : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Та boogiilive@gmail.com хаягаар холбогдоно уу.";
           
         setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
       } else {
-        const modelResponse = response.text || "Уучлаарай, хариу өгөхөд алдаа гарлаа. Та асуултаа тодруулна уу.";
+        const modelResponse = response.text || "Уучлаарай, би таны асуултыг ойлгосонгүй. Та асуултаа тодруулна уу.";
         setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
       }
     } catch (error: any) {
-      console.error("Chat Error Detail:", error);
-      const msg = error?.message || String(error);
+      console.error("GooChat Error:", error);
       let userMsg = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
-      if (msg.includes("GEMINI_API_KEY") || msg.includes("API_KEY") || msg.includes("apiKey")) {
-        userMsg = "AI систем түр ажиллагаагүй байна (API Key тохиргоо дутуу).";
+      
+      if (error?.message === "GEMINI_API_KEY_MISSING") {
+        userMsg = "AI системийн тохиргоо дутуу байна (API Key).";
       }
+      
       setMessages(prev => [...prev, { role: "model", text: userMsg }]);
     } finally {
       setIsLoading(false);
