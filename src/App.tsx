@@ -15,13 +15,12 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollToHashElement from "./components/ScrollToHashElement";
-import GooChat from "./components/GooChat";
+import InternalSystemDemo from "./components/projects/InternalSystemDemo";
 import NameCard from "./components/NameCard";
 import About from "./components/About";
 import Insights from "./components/Insights";
 import InsightDetail from "./components/InsightDetail";
 import FashionDemo from "./components/projects/FashionDemo";
-import InternalSystemDemo from "./components/projects/InternalSystemDemo";
 import SectionDivider from "./components/SectionDivider";
 import { motion, useScroll, useSpring } from "motion/react";
 import { LanguageProvider } from "./translations";
@@ -83,7 +82,6 @@ export default function App() {
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />
         </Routes>
-        <GooChat />
       </BrowserRouter>
     </LanguageProvider>
   );

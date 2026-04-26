@@ -1,7 +1,6 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import { Resend } from "resend";
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -29,81 +28,6 @@ async function startServer() {
   // Test Route
   app.get("/api/test", (req, res) => {
     res.json({ message: "Server is working" });
-  });
-
-  // API Route for Gemini Chat
-  app.post("/api/goo-bot-v2", async (req, res) => {
-    console.log("[SERVER] Received chat request to /api/goo-bot-v2:", JSON.stringify(req.body).substring(0, 100));
-    const { messages } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-
-    if (!apiKey) {
-      console.error("[GEMINI ERROR] API Key is missing in environment");
-      return res.status(500).json({ error: "API Key олдсонгүй. Secrets хэсгээс тохируулна уу." });
-    }
-
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-      const systemInstruction = "Та бол Cornerstone AI компанийн мэргэжлийн AI агент 'Гоо' юм. Зөвхөн манай компани, үйлчилгээнүүдтэй холбоотой мэдээлэл өгнө. Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал Нэр, Утас, Имэйлийг нь асууж авна. Мэдээллийг авсны дараа 'sendLeadInformation' функцийг ашиглан илгээнэ. Аль болох найрсаг, товч хариулна уу.";
-
-      // Use generateContent instead of startChat for maximum compatibility if needed
-      // But we try to format contents correctly
-      const contents = (messages || []).map((m: any, i: number) => ({
-        role: m.role === "user" ? "user" : "model",
-        parts: [{ text: (i === 0 && m.role === "model") ? systemInstruction + "\n\n" + m.text : m.text }]
-      }));
-
-      const tools: any = [{
-        functionDeclarations: [{
-          name: "sendLeadInformation",
-          description: "Sends user contact information (lead) to Cornerstone AI team.",
-          parameters: {
-            type: SchemaType.OBJECT,
-            properties: {
-              name: { type: SchemaType.STRING },
-              phone: { type: SchemaType.STRING },
-              email: { type: SchemaType.STRING },
-              message: { type: SchemaType.STRING }
-            },
-            required: ["name", "phone", "email", "message"]
-          }
-        }]
-      }];
-
-      const result = await model.generateContent({
-        contents,
-        tools,
-        systemInstruction: { role: "system", parts: [{ text: systemInstruction }] }
-      });
-
-      const response = result.response;
-      
-      // Safety check for empty response
-      if (!response) {
-        throw new Error("AI-аас хариу ирсэнгүй (Empty response)");
-      }
-
-      const functionCalls = response.functionCalls();
-      if (functionCalls && functionCalls.length > 0) {
-        return res.json({ 
-          functionCall: {
-            name: functionCalls[0].name,
-            args: functionCalls[0].args
-          }
-        });
-      }
-
-      const text = response.text();
-      return res.json({ text });
-
-    } catch (err: any) {
-      console.error("[SERVER CHAT ERROR]", err);
-      // Detailed error for debugging
-      const msg = err.message || "AI processing failed";
-      res.status(500).json({ error: `AI Алдаа: ${msg}` });
-    }
   });
 
   // API Route for sending emails via Resend
