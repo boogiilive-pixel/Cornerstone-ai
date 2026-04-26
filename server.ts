@@ -59,13 +59,9 @@ async function startServer() {
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      let model;
-      try {
-        // Force v1 API which often has more stable model associations for newer keys
-        model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
-      } catch (e) {
-        model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      }
+      let model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash"
+      });
 
       const tools: any = [
         {
