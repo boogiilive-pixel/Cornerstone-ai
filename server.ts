@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import { Resend } from "resend";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -28,6 +29,118 @@ async function startServer() {
   // Test Route
   app.get("/api/test", (req, res) => {
     res.json({ message: "Server is working" });
+  });
+
+  // API Route for Gemini Chat
+  app.post("/api/chat", async (req, res) => {
+    const { messages } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY || 
+                   process.env.GOOGLE_API_KEY || 
+                   process.env.APP_GEMINI_KEY || 
+                   process.env.API_KEY;
+
+    if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.trim() === "" || apiKey === "undefined") {
+      console.error("[AUTH_ERROR] API Key is missing");
+      return res.status(500).json({ 
+        error: "API Key missing. Please set GEMINI_API_KEY in Secrets." 
+      });
+    }
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      // We will try multiple models in case one is not enabled
+      const modelNames = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro"];
+      let lastError = null;
+
+      for (const modelName of modelNames) {
+        try {
+          console.log(`[SERVER] Trying model: ${modelName}`);
+          const model = genAI.getGenerativeModel({ model: modelName });
+          
+          const tools: any = [{
+            functionDeclarations: [{
+              name: "sendLeadInformation",
+              description: "Sends user contact information (lead) to Cornerstone AI team.",
+              parameters: {
+                type: SchemaType.OBJECT,
+                properties: {
+                  name: { type: SchemaType.STRING, description: "User's full name" },
+                  phone: { type: SchemaType.STRING, description: "User's phone number" },
+                  email: { type: SchemaType.STRING, description: "User's email address" },
+                  message: { type: SchemaType.STRING, description: "Brief description of the request" }
+                },
+                required: ["name", "phone", "email", "message"]
+              }
+            }]
+          }];
+
+          // Format history
+          const history = (messages || [])
+            .filter((m: any, i: number) => i !== 0) // Skip first greeting
+            .slice(0, -1)
+            .map((m: any) => ({
+              role: m.role === "user" ? "user" : "model",
+              parts: [{ text: m.text }],
+            }));
+
+          const lastMessage = messages[messages.length - 1].text;
+
+          const chat = model.startChat({
+            history,
+            tools,
+            systemInstruction: {
+              role: "system",
+              parts: [{
+                text: `
+              Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
+              
+              ХАРИЛЦААНЫ ДҮРЭМ:
+              1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
+              2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
+              3. Хариулт нь товч бөгөөд тодорхой байна.
+              
+              ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
+              - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
+              - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
+
+              Cornerstone AI Үйлчилгээнүүд:
+              - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
+            `}]
+            },
+          });
+
+          const result = await chat.sendMessage(lastMessage);
+          const response = await result.response;
+          
+          const functionCalls = response.functionCalls();
+          if (functionCalls && functionCalls.length > 0) {
+            const call = functionCalls[0];
+            return res.json({ 
+              functionCall: {
+                name: call.name,
+                args: call.args
+              }
+            });
+          }
+
+          return res.json({ text: response.text() });
+        } catch (err: any) {
+          console.warn(`[SERVER] Model ${modelName} failed:`, err.message || err);
+          lastError = err;
+          // Continue to next model if it's a 404/not found error
+          if (err.message?.includes("404") || err.message?.includes("not found")) {
+            continue;
+          }
+          // If it's a different error (like 400 Bad Request about tools), we might need to stop,
+          // but let's try all models anyway.
+        }
+      }
+
+      throw lastError || new Error("Бүх AI загварууд ажиллахгүй байна.");
+    } catch (err: any) {
+      console.error("[SERVER] Chat Error:", err);
+      res.status(500).json({ error: "AI боловсруулалт хийхэд алдаа гарлаа: " + (err.message || "") });
+    }
   });
 
   // API Route for sending emails via Resend

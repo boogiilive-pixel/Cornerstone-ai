@@ -1,11 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Send, Bot, Minimize2, Maximize2 } from "lucide-react";
-import { GoogleGenAI, Type } from "@google/genai";
-
-// Initialize Gemini on the frontend as per guidelines
-// GEMINI_API_KEY is injected into the environment
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 interface Message {
   role: "user" | "model";
@@ -58,69 +53,30 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      // Format tools for function calling
-      const tools = [{
-        functionDeclarations: [{
-          name: "sendLeadInformation",
-          description: "Sends user contact information (lead) to Cornerstone AI team.",
-          parameters: {
-            type: Type.OBJECT,
-            properties: {
-              name: { type: Type.STRING, description: "User's full name" },
-              phone: { type: Type.STRING, description: "User's phone number" },
-              email: { type: Type.STRING, description: "User's email address" },
-              message: { type: Type.STRING, description: "Brief description of the request" }
-            },
-            required: ["name", "phone", "email", "message"]
-          }
-        }]
-      }];
-
-      // Format history into contents
-      // Each content should have a role and parts
-      const contents = newMessages.slice(1).map(m => ({
-        role: m.role === "model" ? "model" : "user",
-        parts: [{ text: m.text }]
-      }));
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents,
-        config: {
-          systemInstruction: `
-            Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
-            
-            ХАРИЛЦААНЫ ДҮРЭМ:
-            1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-            2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
-            3. Хариулт нь товч бөгөөд тодорхой байна.
-            
-            ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-            - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-            - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
-
-            Cornerstone AI Үйлчилгээнүүд:
-            - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
-          `,
-          tools: tools as any,
-        }
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: newMessages }),
       });
 
-      const functionCalls = response.functionCalls;
-      if (functionCalls && functionCalls.length > 0) {
-        const call = functionCalls[0];
-        if (call.name === "sendLeadInformation") {
-          const { name, phone, email, message } = call.args as any;
-          const emailResult = await sendLeadEmail(name, phone, email, message);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Серверээс алдаа ирлээ.");
+      }
+
+      const data = await response.json();
+      
+      if (data.functionCall && data.functionCall.name === "sendLeadInformation") {
+        const { name, phone, email, message } = data.functionCall.args;
+        const emailResult = await sendLeadEmail(name, phone, email, message);
+        
+        const finalResponse = emailResult.success 
+          ? "Баярлалаа! Таны мэдээллийг хүлээн авлаа. Манай баг тантай удахгүй холбогдох болно." 
+          : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Гэхдээ таны хүсэлтийг манай багт дамжууллаа.";
           
-          const finalResponse = emailResult.success 
-            ? "Баярлалаа! Таны мэдээллийг хүлээн авлаа. Манай баг тантай удахгүй холбогдох болно." 
-            : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Гэхдээ таны хүсэлтийг манай багт дамжууллаа.";
-            
-          setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
-        }
-      } else if (response.text) {
-        setMessages(prev => [...prev, { role: "model", text: response.text! }]);
+        setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
+      } else if (data.text) {
+        setMessages(prev => [...prev, { role: "model", text: data.text }]);
       } else {
         throw new Error("AI-аас хариу ирсэнгүй.");
       }
@@ -128,12 +84,8 @@ export default function GooChat() {
       console.error("GooChat Error:", error);
       let errorMsg = "Уучлаарай, системд алдаа гарлаа. Дахин оролдоно уу.";
       
-      if (error.message?.includes("API_KEY_INVALID") || error.message?.includes("403")) {
-        errorMsg = "Google AI түлхүүр идэвхгүй байна.";
-      } else if (error.message?.includes("not found") || error.message?.includes("404")) {
-        errorMsg = "Загвар олдсонгүй (Model not found).";
-      } else if (error.message) {
-        errorMsg = `Алдаа: ${error.message}`;
+      if (error.message) {
+        errorMsg = error.message;
       }
       
       setMessages(prev => [...prev, { role: "model", text: errorMsg }]);
