@@ -28,14 +28,16 @@ async function startServer() {
 
     if (!apiKey || isPlaceholder || apiKey.trim() === "") {
       const isVercel = process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined;
-      const location = isVercel ? "Vercel Dashboard (Settings -> Environment Variables)" : "AI Studio (Settings -> Secrets)";
+      const location = isVercel ? "Vercel Settings -> Environment Variables" : "AI Studio Settings -> Secrets";
       
-      console.error(`[AUTH_ERROR] GEMINI_API_KEY is missing. Env Keys Found: ${Object.keys(process.env).filter(k => !k.includes("SECRET") && !k.includes("KEY")).join(", ")}`);
+      console.error(`[AUTH_ERROR] GEMINI_API_KEY is missing. Available keys: ${Object.keys(process.env).filter(k => k.includes("API") || k.includes("KEY")).join(", ")}`);
       
       return res.status(500).json({ 
         error: "GEMINI_API_KEY_MISSING",
-        details: `Google AI түлхүүр (GEMINI_API_KEY) олдсонгүй. ${location} хэсэгт түлхүүрээ нэмээд "Redeploy" хийнэ үү.`,
-        env_debug: isVercel ? "vercel" : "ai-studio"
+        details: `[АЛДАА] Google AI түлхүүр олдсонгүй. 
+        Хэрэв та AI Studio-ийн Preview ашиглаж байгаа бол: Settings -> Secrets хэсэгт 'GEMINI_API_KEY' түлхүүрээ нэмнэ үү.
+        Хэрэв та Vercel ашиглаж байгаа бол: ${location} хэсэгт түлхүүрээ нэмээд Redeploy хийнэ үү.`,
+        isVercel
       });
     }
 
