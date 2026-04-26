@@ -33,6 +33,7 @@ async function startServer() {
 
   // API Route for Gemini Chat
   app.post("/api/chat", async (req, res) => {
+    console.log("[SERVER] Received chat request:", JSON.stringify(req.body).substring(0, 100));
     const { messages } = req.body;
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
