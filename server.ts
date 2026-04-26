@@ -55,7 +55,28 @@ async function startServer() {
       for (const modelName of modelNames) {
         try {
           console.log(`[SERVER] Trying model: ${modelName}`);
-          const model = genAI.getGenerativeModel({ model: modelName });
+          const model = genAI.getGenerativeModel({ 
+            model: modelName,
+            systemInstruction: {
+              role: "system",
+              parts: [{
+                text: `
+              Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
+              
+              ХАРИЛЦААНЫ ДҮРЭМ:
+              1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
+              2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
+              3. Хариулт нь товч бөгөөд тодорхой байна.
+              
+              ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
+              - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
+              - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
+
+              Cornerstone AI Үйлчилгээнүүд:
+              - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
+            `}]
+            },
+          });
           
           const tools: any = [{
             functionDeclarations: [{
@@ -88,25 +109,6 @@ async function startServer() {
           const chat = model.startChat({
             history,
             tools,
-            systemInstruction: {
-              role: "system",
-              parts: [{
-                text: `
-              Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
-              
-              ХАРИЛЦААНЫ ДҮРЭМ:
-              1. Зөвхөн Cornerstone AI компани, түүний үйлчилгээ, төслүүдтэй холбоотой асуултанд хариулна.
-              2. Хэрэв хэрэглэгч компанитай холбоогүй зүйл асуувал: "Уучлаарай, би зөвхөн Cornerstone AI компани болон манай үйлчилгээтэй холбоотой мэдээлэл өгөх боломжтой." гэж хариулна.
-              3. Хариулт нь товч бөгөөд тодорхой байна.
-              
-              ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
-              - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-              - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг баг руу илгээнэ.
-
-              Cornerstone AI Үйлчилгээнүүд:
-              - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
-            `}]
-            },
           });
 
           const result = await chat.sendMessage(lastMessage);
