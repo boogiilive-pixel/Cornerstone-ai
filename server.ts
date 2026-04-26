@@ -23,19 +23,26 @@ async function startServer() {
   // API Route for Gemini Chat
   app.post("/api/chat", async (req, res) => {
     const { messages } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.API_KEY;
-    const isMissing = !apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey === "YOUR_API_KEY_HERE" || apiKey.trim() === "" || apiKey === "undefined";
+    const apiKey = process.env.GEMINI_API_KEY || 
+                   process.env.GOOGLE_API_KEY || 
+                   process.env.APP_GEMINI_KEY || 
+                   process.env.API_KEY;
+    const isMissing = !apiKey || 
+                      apiKey === "MY_GEMINI_API_KEY" || 
+                      apiKey === "YOUR_API_KEY_HERE" || 
+                      apiKey.trim() === "" || 
+                      apiKey === "undefined";
 
     if (isMissing) {
       const isVercel = process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined;
       
-      console.error(`[AUTH_ERROR] GEMINI_API_KEY is missing.`);
+      console.error(`[AUTH_ERROR] API Key is missing (Gemini/Google).`);
       
       return res.status(500).json({ 
         error: "GEMINI_API_KEY_MISSING",
         details: isVercel 
-          ? "Vercel Dashboard -> Settings -> Environment Variables хэсэгт 'GEMINI_API_KEY' түлхүүрээ нэмээд REDEPLOY хийнэ үү." 
-          : "Төслийн зүүн доод буланд байх 'Settings' (араа) -> 'Secrets' таб дотор 'GEMINI_API_KEY' нэрээр түлхүүрээ нэмээд Save хийнэ үү."
+          ? "Vercel Dashboard -> Settings -> Environment Variables хэсэгт 'GOOGLE_API_KEY' нэртэйгээр түлхүүрээ нэмээд REDEPLOY хийнэ үү." 
+          : "Баруун дээд буланд байх 'Settings' (арааны зураг) -> 'Secrets' таб дотор 'GOOGLE_API_KEY' (эсвэл 'APP_GEMINI_KEY') нэрээр түлхүүрээ нэмээд Save хийнэ үү."
       });
     }
 

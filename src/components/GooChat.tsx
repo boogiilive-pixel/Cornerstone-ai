@@ -61,11 +61,19 @@ export default function GooChat() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.error === "GEMINI_API_KEY_MISSING") {
-          throw new Error(errorData.details || "Google AI түлхүүр (GEMINI_API_KEY) тохируулагдаагүй байна.");
+        let errorMsg = "Холболтын алдаа гарлаа.";
+        try {
+          const errorData = await response.json();
+          if (errorData.error === "GEMINI_API_KEY_MISSING") {
+            errorMsg = errorData.details || "Google AI түлхүүр тохируулагдаагүй байна.";
+          } else {
+            errorMsg = errorData.error || errorMsg;
+          }
+        } catch (e) {
+          // If response is not JSON (e.g. 502 Bad Gateway)
+          errorMsg = `Сервертэй холбогдоход алдаа гарлаа (Status: ${response.status})`;
         }
-        throw new Error(errorData.error || "Request failed");
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
