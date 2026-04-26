@@ -55,9 +55,11 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
+      // Safely access GEMINI_API_KEY
+      const apiKey = (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : (window as any).process?.env?.GEMINI_API_KEY) || "";
+      
       if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey.length < 10) {
-        throw new Error("Invalid or missing GEMINI_API_KEY.");
+        throw new Error("GEMINI_API_KEY is missing or invalid.");
       }
 
       const ai = new GoogleGenAI({ apiKey });
@@ -79,10 +81,15 @@ export default function GooChat() {
       `;
 
       // Format contents for @google/genai
+      // Strictly alternate roles, starting with 'user'
       const contents = newMessages
-        .filter((_, i) => i > 0 || messages[0].role === 'user')
+        .filter((m, i) => {
+          // If first message is model, skip it to ensure we start with user
+          if (i === 0 && m.role === 'model') return false;
+          return true;
+        })
         .map(m => ({
-          role: m.role === "function" ? "model" : m.role,
+          role: m.role === "function" ? "model" as const : (m.role as "user" | "model"),
           parts: [{ text: m.text }]
         }));
 
@@ -131,10 +138,12 @@ export default function GooChat() {
         setMessages(prev => [...prev, { role: "model", text: modelResponse }]);
       }
     } catch (error: any) {
-      console.error("Chat Error:", error);
-      const msg = error?.message || "";
+      console.error("Chat Error Detail:", error);
+      const msg = error?.message || String(error);
       let userMsg = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
-      if (msg.includes("GEMINI_API_KEY")) userMsg = "AI систем түр ажиллагаагүй байна (API Key алдаа).";
+      if (msg.includes("GEMINI_API_KEY") || msg.includes("API_KEY") || msg.includes("apiKey")) {
+        userMsg = "AI систем түр ажиллагаагүй байна (API Key тохиргоо дутуу).";
+      }
       setMessages(prev => [...prev, { role: "model", text: userMsg }]);
     } finally {
       setIsLoading(false);
