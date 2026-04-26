@@ -37,15 +37,22 @@ async function startServer() {
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({ error: "API Key missing. Please set GEMINI_API_KEY." });
+      console.error("[GEMINI ERROR] API Key is missing in environment");
+      return res.status(500).json({ error: "API Key олдсонгүй. Secrets хэсгээс тохируулна уу." });
     }
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        systemInstruction: "Та бол Cornerstone AI компанийн мэргэжлийн AI агент 'Гоо' юм. Зөвхөн манай компани, үйлчилгээнүүдтэй холбоотой мэдээлэл өгнө. Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал Нэр, Утас, Имэйлийг нь асууж авна. Мэдээллийг авсны дараа 'sendLeadInformation' функцийг ашиглан илгээнэ."
-      });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const systemInstruction = "Та бол Cornerstone AI компанийн мэргэжлийн AI агент 'Гоо' юм. Зөвхөн манай компани, үйлчилгээнүүдтэй холбоотой мэдээлэл өгнө. Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал Нэр, Утас, Имэйлийг нь асууж авна. Мэдээллийг авсны дараа 'sendLeadInformation' функцийг ашиглан илгээнэ. Аль болох найрсаг, товч хариулна уу.";
+
+      // Use generateContent instead of startChat for maximum compatibility if needed
+      // But we try to format contents correctly
+      const contents = (messages || []).map((m: any, i: number) => ({
+        role: m.role === "user" ? "user" : "model",
+        parts: [{ text: (i === 0 && m.role === "model") ? systemInstruction + "\n\n" + m.text : m.text }]
+      }));
 
       const tools: any = [{
         functionDeclarations: [{
@@ -64,20 +71,19 @@ async function startServer() {
         }]
       }];
 
-      const history = (messages || [])
-        .filter((_: any, i: number) => i !== 0) // Skip first greeting
-        .slice(0, -1)
-        .map((m: any) => ({
-          role: m.role === "user" ? "user" : "model",
-          parts: [{ text: m.text }],
-        }));
+      const result = await model.generateContent({
+        contents,
+        tools,
+        systemInstruction: { role: "system", parts: [{ text: systemInstruction }] }
+      });
 
-      const lastMessage = messages[messages.length - 1].text;
-
-      const chat = model.startChat({ history, tools });
-      const result = await chat.sendMessage(lastMessage);
       const response = result.response;
       
+      // Safety check for empty response
+      if (!response) {
+        throw new Error("AI-аас хариу ирсэнгүй (Empty response)");
+      }
+
       const functionCalls = response.functionCalls();
       if (functionCalls && functionCalls.length > 0) {
         return res.json({ 
@@ -88,10 +94,14 @@ async function startServer() {
         });
       }
 
-      return res.json({ text: response.text() });
+      const text = response.text();
+      return res.json({ text });
+
     } catch (err: any) {
       console.error("[SERVER CHAT ERROR]", err);
-      res.status(500).json({ error: err.message || "AI processing failed" });
+      // Detailed error for debugging
+      const msg = err.message || "AI processing failed";
+      res.status(500).json({ error: `AI Алдаа: ${msg}` });
     }
   });
 

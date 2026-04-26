@@ -54,11 +54,18 @@ export default function GooChat() {
         body: JSON.stringify({ messages: newMessages }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Сервер талд алдаа гарлаа.");
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { error: `Server error (${response.status})` };
+        }
+        throw new Error(errorData.error || "Сервер талд үл мэдэгдэх алдаа гарлаа.");
       }
+
+      const data = await response.json();
 
       if (data.functionCall && data.functionCall.name === "sendLeadInformation") {
         const { name, phone, email, message } = data.functionCall.args;
