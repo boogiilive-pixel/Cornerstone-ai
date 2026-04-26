@@ -31,27 +31,14 @@ async function startServer() {
     res.json({ message: "Server is working" });
   });
 
-  // Debug route for /api/chat
-  app.all("/api/chat", (req, res, next) => {
-    if (req.method === "POST") {
-      return next();
-    }
-    console.warn(`[SERVER] Warning: Received ${req.method} request on /api/chat. Expected POST.`);
-    res.status(405).json({ 
-      error: "Method Not Allowed", 
-      message: `Би чатбот руу POST хүсэлт хүлээж байсан боловч ${req.method} ирлээ.` 
-    });
-  });
-
   // API Route for Gemini Chat
   app.post("/api/chat", async (req, res) => {
-    console.log("[SERVER] Incoming POST request to /api/chat");
     const { messages } = req.body;
     const apiKey = process.env.GEMINI_API_KEY || 
                    process.env.GOOGLE_API_KEY || 
                    process.env.APP_GEMINI_KEY || 
                    process.env.API_KEY;
-    console.log(`[SERVER] API Key present: ${!!apiKey}`);
+
     const isMissing = !apiKey || 
                       apiKey === "MY_GEMINI_API_KEY" || 
                       apiKey === "YOUR_API_KEY_HERE" || 
@@ -59,10 +46,8 @@ async function startServer() {
                       apiKey === "undefined";
 
     if (isMissing) {
-      console.warn("[SERVER] API Key is missing or invalid.");
       const isVercel = process.env.VERCEL === "1" || process.env.VERCEL_ENV !== undefined;
-      
-      console.error(`[AUTH_ERROR] API Key is missing (Gemini/Google).`);
+      console.error(`[AUTH_ERROR] API KEY MISSING`);
       
       return res.status(500).json({ 
         error: "GEMINI_API_KEY_MISSING",
@@ -73,12 +58,10 @@ async function startServer() {
     }
 
     try {
-      console.log("[SERVER] Initializing Gemini model...");
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
       });
-      // ... rest of code
 
       const tools: any = [
         {
