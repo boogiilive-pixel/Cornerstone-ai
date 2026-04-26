@@ -42,7 +42,7 @@ async function startServer() {
           similarKeysFound: foundKeys,
           isVercel
         },
-        instruction: "Settings -> Secrets хэсэгт 'GEMINI_API_KEY' нэрээр түлхүүрээ нэмээд хадгална уу."
+        instruction: "Google AI түлхүүр (GEMINI_API_KEY) олдсонгүй. Settings (арааны зураг) -> Secrets хэсэгт түлхүүрээ нэмээд хадгална уу."
       });
     }
 
