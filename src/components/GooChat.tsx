@@ -86,7 +86,8 @@ export default function GooChat() {
       }
     } catch (error: any) {
       console.error("GooChat Error:", error);
-      const errorMessage = (error.message.includes("Google AI түлхүүр") || error.message.includes("GEMINI_API_KEY"))
+      // Show the actual error message if possible, otherwise fallback
+      const errorMessage = error.message && error.message !== "Request failed" 
         ? error.message 
         : "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
       setMessages(prev => [...prev, { role: "model", text: errorMessage }]);
