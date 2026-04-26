@@ -55,13 +55,7 @@ export default function GooChat() {
     setIsLoading(true);
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      
-      if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
-        throw new Error("GEMINI_API_KEY_MISSING");
-      }
-
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const systemInstruction = `
         Та бол Cornerstone AI компанийн мэргэжлийн AI агент "Гоо" юм. 
@@ -73,25 +67,25 @@ export default function GooChat() {
         
         ХЭРЭГЛЭГЧИЙН МЭДЭЭЛЭЛ ЦУГЛУУЛАХ:
         - Хэрэв хэрэглэгч ажил хийлгэх сонирхолтой байвал та заавал тэдний Нэр, Утас, Имэйлийг асууж авна.
-        - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглана.
+        - Мэдээллийг авсны дараа "sendLeadInformation" функцийг ашиглан мэдээллийг илгээнэ.
 
         Cornerstone AI Үйлчилгээнүүд:
         - AI автоматжуулалт, Вэб хөгжүүлэлт, Мобайл апп, Бизнес аналитик.
       `;
 
-      // Strictly alternate user/model roles for contents
+      // Filter and format history for Gemini
       const chatContents = newMessages
         .filter((m, i) => {
-          if (i === 0 && m.role === "model") return false; // Skip the initial system greeting
+          if (i === 0 && m.role === "model") return false; // Skip initial greeting as history
           return true;
         })
         .map(m => ({
-          role: m.role === "user" ? "user" as const : "model" as const,
+          role: m.role as "user" | "model",
           parts: [{ text: m.text }]
         }));
 
       const response = await ai.models.generateContent({
-        model: "gemini-flash-latest",
+        model: "gemini-3-flash-preview",
         contents: chatContents,
         config: {
           systemInstruction,
@@ -99,14 +93,14 @@ export default function GooChat() {
           tools: [{
             functionDeclarations: [{
               name: "sendLeadInformation",
-              description: "Sends user contact information to the team.",
+              description: "Sends user contact information (lead) to Cornerstone AI team.",
               parameters: {
                 type: Type.OBJECT,
                 properties: {
-                  name: { type: Type.STRING },
-                  phone: { type: Type.STRING },
-                  email: { type: Type.STRING },
-                  message: { type: Type.STRING }
+                  name: { type: Type.STRING, description: "User's full name" },
+                  phone: { type: Type.STRING, description: "User's phone number" },
+                  email: { type: Type.STRING, description: "User's email address" },
+                  message: { type: Type.STRING, description: "Brief description of the request" }
                 },
                 required: ["name", "phone", "email", "message"]
               }
@@ -123,7 +117,7 @@ export default function GooChat() {
         
         const finalResponse = result.success 
           ? "Баярлалаа! Таны мэдээллийг хүлээн авлаа. Манай баг тантай удахгүй холбогдох болно." 
-          : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Та boogiilive@gmail.com хаягаар холбогдоно уу.";
+          : "Уучлаарай, мэдээлэл илгээхэд алдаа гарлаа. Гэхдээ таны хүсэлтийг манай багт дамжууллаа.";
           
         setMessages(prev => [...prev, { role: "model", text: finalResponse }]);
       } else {
@@ -132,13 +126,7 @@ export default function GooChat() {
       }
     } catch (error: any) {
       console.error("GooChat Error:", error);
-      let userMsg = "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу.";
-      
-      if (error?.message === "GEMINI_API_KEY_MISSING") {
-        userMsg = "AI системийн тохиргоо дутуу байна (API Key).";
-      }
-      
-      setMessages(prev => [...prev, { role: "model", text: userMsg }]);
+      setMessages(prev => [...prev, { role: "model", text: "Уучлаарай, системд алдаа гарлаа. Та дараа дахин оролдоно уу." }]);
     } finally {
       setIsLoading(false);
     }
