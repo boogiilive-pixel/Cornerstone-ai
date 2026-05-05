@@ -93,6 +93,18 @@ export default function CaseStudies() {
       stack: ["AI", "Messenger", "Node.js"]
     },
     {
+      id: 10,
+      category: "Website",
+      title: { mn: "Sahmyook MBC - Сургалтын төв", en: "Sahmyook MBC - Training Center" },
+      description: { 
+        mn: "Солонгос хэлний сургалтын төвийн албан ёсны мэдээ мэдээллийн портал вэбсайт.", 
+        en: "Official news portal and information website for the Korean language training center." 
+      },
+      image: "https://lh3.googleusercontent.com/d/1-2dHKXtBuYk-jUjL5rHVjXPnH2ZlUgze",
+      link: "https://sahmyook.mn",
+      stack: ["Next.js", "Tailwind"]
+    },
+    {
       id: 5,
       category: "Platform",
       title: { mn: "Онлайн дэлгүүр", en: "Online Store" },
