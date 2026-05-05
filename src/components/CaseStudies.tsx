@@ -97,8 +97,8 @@ export default function CaseStudies() {
       category: "Website",
       title: { mn: "Sahmyook MBC - Сургалтын төв", en: "Sahmyook MBC - Training Center" },
       description: { 
-        mn: "Солонгос хэлний сургалтын төвийн албан ёсны мэдээ мэдээллийн портал вэбсайт.", 
-        en: "Official news portal and information website for the Korean language training center." 
+        mn: "Самюүк Мэргэжлийн Боловсролын сургуулийн албан ёсны вэб сайт", 
+        en: "Official website of Sahmyook Vocational Education School" 
       },
       image: "https://lh3.googleusercontent.com/d/1-2dHKXtBuYk-jUjL5rHVjXPnH2ZlUgze",
       link: "https://sahmyook.mn",
