@@ -95,13 +95,13 @@ export default function CaseStudies() {
     {
       id: 10,
       category: "Website",
-      title: { mn: "Sahmyook MBC - Сургалтын төв", en: "Sahmyook MBC - Training Center" },
+      title: { mn: "Sahmyook MBC - Сам Юүк МБС", en: "Sahmyook MBC" },
       description: { 
         mn: "Самюүк Мэргэжлийн Боловсролын сургуулийн албан ёсны вэб сайт", 
         en: "Official website of Sahmyook Vocational Education School" 
       },
       image: "https://lh3.googleusercontent.com/d/1-2dHKXtBuYk-jUjL5rHVjXPnH2ZlUgze",
-      link: "https://sahmyook.mn",
+      link: "https://sahmyookmbc.com/",
       stack: ["Next.js", "Tailwind"]
     },
     {
