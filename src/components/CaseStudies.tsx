@@ -105,6 +105,18 @@ export default function CaseStudies() {
       stack: ["Next.js", "Tailwind"]
     },
     {
+      id: 11,
+      category: "Platform",
+      title: { mn: "Togdu.com - СӨХ ухаалаг платформ", en: "Togdu.com - Smart Platform" },
+      description: { 
+        mn: "Сууц өмчлөгчдийн холбооны үйл ажиллагааг хөнгөвчлөх, оршин суугчдад зориулсан ухаалаг систем.", 
+        en: "Smart system for homeowners' associations and residents, simplifying operations." 
+      },
+      image: "https://lh3.googleusercontent.com/d/15i4sIUHt2r1i5FjBbb6FS9jGn1u-8f3Q",
+      link: "https://togdu.com/",
+      stack: ["React", "Firebase", "Node.js"]
+    },
+    {
       id: 5,
       category: "Platform",
       title: { mn: "Онлайн дэлгүүр", en: "Online Store" },
