@@ -20,6 +20,15 @@ const ARTICLES = [
     image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop"
   },
   {
+    category: "AI",
+    title: "AI Agent-ийн буруу тохиргооноос болж компани бүх датагаа алдлаа",
+    excerpt: "AI Agent-д хэт их эрх өгснөөс болж дотоод сервер дээрх чухал мэдээллүүд устсан ноцтой тохиолдол гарлаа. Энэ нь бизнесүүдэд ямар сэрэмжлүүлэг болж байна вэ?",
+    date: "2026.05.13",
+    readTime: "6 мин",
+    slug: "ai-agent-misconfiguration-data-loss",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop"
+  },
+  {
     category: "Технологи",
     title: "Next.js яагаад WordPress-ээс дээр вэ?",
     excerpt: "WordPress бол гайхалтай платформ, гэхдээ орчин үеийн хэрэглэгчид хурдыг хамгийн түрүүнд тавьдаг болсон. Next.js ашигласнаар таны вэбсайт нүд ирмэхийн зуур ачаалж, Google-ийн хайлтад дээгүүр гарах боломж 2 дахин нэмэгдэнэ.",
