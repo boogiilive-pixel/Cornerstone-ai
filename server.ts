@@ -90,7 +90,9 @@ async function startServer() {
       return res.status(400).json({ error: "Messages array is required." });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
       console.warn("GEMINI_API_KEY is not set. Using simulated response for preview.");
       // Graceful fallback for preview when key is not loaded yet
       const lastMsg = messages[messages.length - 1]?.content || "";
@@ -105,9 +107,15 @@ async function startServer() {
     }
 
     try {
-      if (!ai) {
-        return res.status(500).json({ error: "AI agent failed to initialize securely." });
-      }
+      // Dynamic lazy initialization inside handler for robustness
+      const activeAi = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: {
+          headers: {
+            "User-Agent": "aistudio-build",
+          },
+        },
+      });
 
       const systemInstruction = `Та бол Сорнерстоун АЙ (Cornerstone AI) компанийн албан ёсны ухаалаг туслах (AI Assistant) юм.
 Харилцагчтай маш эелдэг, найрсаг, мэргэжлийн түвшинд Монгол эсвэл Англи хэл дээр харилцаарай.
@@ -140,12 +148,21 @@ async function startServer() {
 Асуултанд богино, ойлгомжтой, үнэ цэнэтэй байдлаар хариулна уу. Текст хариуг уншихад хялбар бөгөөд гоё формат дизайнтай байхаар Markdown ашиглаж гаргаарай.`;
 
       // Format previous messages correctly for the SDK (roles 'user' and 'model')
-      const formattedContents = messages.map((m: any) => ({
+      let formattedContents = messages.map((m: any) => ({
         role: m.role === "assistant" ? "model" : m.role,
         parts: [{ text: m.content || m.text || "" }],
       }));
 
-      const geminiResponse = await ai.models.generateContent({
+      // CRITICAL: The Gemini conversation contents MUST start with a 'user' message turn.
+      // We filter out any leading introductory 'model' messages (e.g., the welcome message).
+      const firstUserIndex = formattedContents.findIndex((item: any) => item.role === "user");
+      if (firstUserIndex !== -1) {
+        formattedContents = formattedContents.slice(firstUserIndex);
+      } else {
+        formattedContents = [{ role: "user", parts: [{ text: "Hello" }] }];
+      }
+
+      const geminiResponse = await activeAi.models.generateContent({
         model: "gemini-3.5-flash",
         contents: formattedContents,
         config: {
