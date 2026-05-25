@@ -83,7 +83,7 @@ export default function App() {
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />
         </Routes>
-        <GeminiChatbot />
+        {/* <GeminiChatbot /> */}
       </BrowserRouter>
     </LanguageProvider>
   );
