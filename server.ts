@@ -7,8 +7,17 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Support both ESM (development under tsx) and CommonJS (production compiled code)
+const _filename = typeof import.meta !== "undefined" && import.meta.url
+  ? fileURLToPath(import.meta.url)
+  : ((globalThis as any).__filename || "");
+const _dirname = typeof import.meta !== "undefined" && import.meta.url
+  ? path.dirname(_filename)
+  : ((globalThis as any).__dirname || "");
+
+// Use these fallback safe variables in our code block
+const __filename = _filename;
+const __dirname = _dirname;
 
 dotenv.config();
 
