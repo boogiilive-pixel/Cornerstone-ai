@@ -22,6 +22,7 @@ import Insights from "./components/Insights";
 import InsightDetail from "./components/InsightDetail";
 import FashionDemo from "./components/projects/FashionDemo";
 import SectionDivider from "./components/SectionDivider";
+import GeminiChatbot from "./components/GeminiChatbot";
 import { motion, useScroll, useSpring } from "motion/react";
 import { LanguageProvider } from "./translations";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -82,6 +83,7 @@ export default function App() {
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />
         </Routes>
+        <GeminiChatbot />
       </BrowserRouter>
     </LanguageProvider>
   );

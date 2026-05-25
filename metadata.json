@@ -1,5 +1,6 @@
 {
   "name": "CornerstoneAI",
   "description": "Вэбсайт хөгжүүлэлт, Апп хөгжүүлэлт, Брэнд бүтээх болон Бизнес зөвлөгөө өгөх AI-д суурилсан технологийн компани.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
