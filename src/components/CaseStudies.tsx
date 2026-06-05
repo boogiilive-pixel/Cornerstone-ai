@@ -57,6 +57,18 @@ export default function CaseStudies() {
       stack: ["Next.js", "Tailwind", "React"]
     },
     {
+      id: 13,
+      category: "Website",
+      title: { mn: "Топаз Эмнэлэг - topaz.mn", en: "Topaz Clinical Hospital" },
+      description: { 
+        mn: "Эмнэлгийн цогц үйлчилгээ, эмчийн цаг захиалга, зөвлөгөө мэдээллийн орчин үеийн систем бүхий вэбсайт.", 
+        en: "Modern clinical hospital website with service booking, patient information, and specialist guides." 
+      },
+      image: "https://lh3.googleusercontent.com/d/1aD92butNmz68MNvLjgFKexXbNuJBw55X",
+      link: "https://topaz.mn/",
+      stack: ["React", "Next.js", "Tailwind"]
+    },
+    {
       id: 3,
       category: "Website",
       title: { mn: "Вэбсайт /Админ панел/", en: "Website /Admin Panel/" },
