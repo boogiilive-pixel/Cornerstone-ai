@@ -45,6 +45,18 @@ export default function CaseStudies() {
       stack: ["Flutter", "Firebase"]
     },
     {
+      id: 12,
+      category: "Website",
+      title: { mn: "Personal Brand Tselmegzorigt.com", en: "Personal Brand Tselmegzorigt.com" },
+      description: { 
+        mn: "Хувийн брэнд, контент бүтээгч болон мэргэжлийн үйл ажиллагааны орчин үеийн танилцуулга вэбсайт.", 
+        en: "Modern personal brand portfolio, content hub, and professional showcase website." 
+      },
+      image: "https://lh3.googleusercontent.com/d/11nGKWo0h0fupaveLRjfZByqLP6xkMIuO",
+      link: "https://tselmegzorigt.com/",
+      stack: ["Next.js", "Tailwind", "React"]
+    },
+    {
       id: 3,
       category: "Website",
       title: { mn: "Вэбсайт /Админ панел/", en: "Website /Admin Panel/" },
