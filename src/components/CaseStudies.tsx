@@ -69,6 +69,18 @@ export default function CaseStudies() {
       stack: ["React", "Next.js", "Tailwind"]
     },
     {
+      id: 14,
+      category: "AI",
+      title: { mn: "Mentora.mn - AI Ментор", en: "Mentora.mn - Personal AI Mentor" },
+      description: { 
+        mn: "Хэрэглэгчийн амьдралын 9 талбарыг оношилж, хувь хүний архитектур бүтээж, AI ментороор чиглүүлэх ухаалаг систем.", 
+        en: "Intelligent personal AI mentor platform that diagnoses 9 key life areas, builds individual life architecture, and provides guided AI coaching." 
+      },
+      image: "https://lh3.googleusercontent.com/d/1EoCmFx_kh19CHYtVoB_N01CZDl7jvADe",
+      link: "https://mentora.mn/",
+      stack: ["AI", "React", "Tailwind"]
+    },
+    {
       id: 3,
       category: "Website",
       title: { mn: "Вэбсайт /Админ панел/", en: "Website /Admin Panel/" },
