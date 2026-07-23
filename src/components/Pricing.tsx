@@ -8,7 +8,7 @@ export default function Pricing() {
   const plans = [
     {
       name: { mn: "Starter Foundation", en: "Starter Foundation" },
-      price: { mn: "₮1.5M+", en: "₮1.5M+" },
+      price: { mn: "₮2.8M+", en: "₮2.8M+" },
       description: { 
         mn: "Жижиг бизнес болон танилцуулга вэб сайтуудад зориулагдсан.", 
         en: "Designed for small businesses and presentation websites." 
@@ -22,7 +22,7 @@ export default function Pricing() {
     },
     {
       name: { mn: "Growth Builder", en: "Growth Builder" },
-      price: { mn: "₮3.5M+", en: "₮3.5M+" },
+      price: { mn: "₮4.8M+", en: "₮4.8M+" },
       description: { 
         mn: "Борлуулалт болон систем интеграци шаардлагатай бизнесүүдэд.", 
         en: "For businesses requiring sales and system integration." 
