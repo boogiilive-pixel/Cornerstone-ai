@@ -69,6 +69,18 @@ export default function CaseStudies() {
       stack: ["React", "Next.js", "Tailwind"]
     },
     {
+      id: 15,
+      category: "Website",
+      title: { mn: "Bionoil.com - Компанийн вэбсайт", en: "Bionoil.com - Corporate Website" },
+      description: { 
+        mn: "Компанийн танилцуулга вэбсайт, бараа захиалах, төслүүд үзэх, бараа тоног төхөөрөмж түрээслэх систем.", 
+        en: "Corporate presentation website featuring product catalog & orders, project showcase, and equipment rental solutions." 
+      },
+      image: "https://lh3.googleusercontent.com/d/1DaB9JW0ITm5njbbRp71uQ2xVuRCghTBD",
+      link: "https://bionoil.com/",
+      stack: ["Next.js", "React", "Tailwind"]
+    },
+    {
       id: 14,
       category: "AI",
       title: { mn: "Mentora.mn - AI Ментор", en: "Mentora.mn - Personal AI Mentor" },
