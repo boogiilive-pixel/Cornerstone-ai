@@ -33,6 +33,30 @@ export default function CaseStudies() {
       stack: ["AI", "Python", "React"]
     },
     {
+      id: 16,
+      category: "Website",
+      title: { mn: "Mongol-Trails.com - Аялал жуулчлалын платформ", en: "Mongol-Trails.com - Tourism Platform" },
+      description: { 
+        mn: "Аялал жуулчлалын вэб сайт бөгөөд админ панелтай, Англи Монгол хэлтэй бүрэн хэмжээний орчин үеийн вэб сайт.", 
+        en: "Full-featured modern tourism platform with custom admin panel and bilingual (English / Mongolian) booking system." 
+      },
+      image: "/mongol-trails.png",
+      link: "https://mongol-trails.com/en",
+      stack: ["Next.js", "Admin Panel", "Tailwind", "i18n"]
+    },
+    {
+      id: 17,
+      category: "Website",
+      title: { mn: "VivaceMusic.mn - Хөгжмийн сургалт ба дэлгүүр", en: "VivaceMusic.mn - Music Academy & Shop" },
+      description: { 
+        mn: "Хөгжмийн сургалт болон хөгжмийн дэлгүүрийн вэб систем. Сурагч бүртгэл болон онлайн дэлгүүрийн цогц систем юм.", 
+        en: "Music academy and music store web platform with integrated student registration and e-commerce system." 
+      },
+      image: "/vivace-music.png",
+      link: "https://vivacemusic.mn/",
+      stack: ["React", "E-Commerce", "Registration", "Tailwind"]
+    },
+    {
       id: 2,
       category: "Mobile",
       title: { mn: "Хувь хүний хөгжлийн бүрэн автомат апп", en: "Personal Development Automation App" },
@@ -296,6 +320,13 @@ export default function CaseStudies() {
                     alt={item.title[language]}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      if (item.image === "/mongol-trails.png") {
+                        (e.currentTarget as HTMLImageElement).src = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/lovp_21h6m676d69xj8bwzz9028v2h9/7d672b26896125e9c353a1b95b4ea032_1789893699753.png";
+                      } else if (item.image === "/vivace-music.png") {
+                        (e.currentTarget as HTMLImageElement).src = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/lovp_6d87gh2k7g8xkrmgjj6mwrfw6r/00f35cc3e24ccb39c73c12aabf314771_1789821557123.png";
+                      }
+                    }}
                   />
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors duration-500" />
                 </div>
