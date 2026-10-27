@@ -23,6 +23,7 @@ import InsightDetail from "./components/InsightDetail";
 import FashionDemo from "./components/projects/FashionDemo";
 import SectionDivider from "./components/SectionDivider";
 import GeminiChatbot from "./components/GeminiChatbot";
+import Bizora from "./components/Bizora";
 import { motion, useScroll, useSpring } from "motion/react";
 import { LanguageProvider } from "./translations";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -80,6 +81,7 @@ export default function App() {
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightDetail />} />
           <Route path="/digitalcard" element={<NameCard />} />
+          <Route path="/bizora" element={<Bizora />} />
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />
         </Routes>

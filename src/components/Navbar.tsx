@@ -35,6 +35,7 @@ export default function Navbar() {
     { name: t('nav_about'), href: "/about" },
     { name: t('nav_insights'), href: "/insights" },
     { name: t('nav_cases'), href: "/#cases" },
+    { name: "Bizora App", href: "/bizora" },
     { name: t('nav_pricing'), href: "/#pricing" },
     { name: "Digital Card", href: "/digitalcard" },
   ];
