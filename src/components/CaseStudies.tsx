@@ -57,6 +57,18 @@ export default function CaseStudies() {
       stack: ["React", "E-Commerce", "Registration", "Tailwind"]
     },
     {
+      id: 20,
+      category: "Mobile",
+      title: { mn: "Bizora - Business English App", en: "Bizora - Business English App" },
+      description: { 
+        mn: "Бизнес эрхлэгчид, үүсгэн байгуулагчдад зориулсан 10 минутын хичээл, AI ярианы дасгалжуулагчтай бизнесийн англи хэлний аппликейшн.", 
+        en: "Executive business English app for founders and business owners with 10-minute micro-lessons and real-time AI speech coaching." 
+      },
+      image: "/assets/aistudio/bb39d0e6-2614-4ebd-8c77-d3576a13b31c_86466364.png",
+      link: "/bizora",
+      stack: ["iOS", "AI Speech Coach", "React", "Mobile"]
+    },
+    {
       id: 2,
       category: "Mobile",
       title: { mn: "Хувь хүний хөгжлийн бүрэн автомат апп", en: "Personal Development Automation App" },

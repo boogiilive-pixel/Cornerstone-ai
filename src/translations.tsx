@@ -17,6 +17,7 @@ export const translations: Translations = {
   nav_process: { mn: "Процесс", en: "Process" },
   nav_cases: { mn: "Ажил", en: "Portfolio" },
   nav_pricing: { mn: "Үнэ", en: "Pricing" },
+  nav_bizora: { mn: "Bizora Апп", en: "Bizora App" },
   nav_cta: { mn: "Төслөө эхлүүлэх", en: "Start Project" },
 
   // Hero

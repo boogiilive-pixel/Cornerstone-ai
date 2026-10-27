@@ -82,6 +82,11 @@ export default function App() {
           <Route path="/insights/:slug" element={<InsightDetail />} />
           <Route path="/digitalcard" element={<NameCard />} />
           <Route path="/bizora" element={<Bizora />} />
+          <Route path="/bizora/*" element={<Bizora />} />
+          <Route path="/bezora" element={<Bizora />} />
+          <Route path="/bezora/*" element={<Bizora />} />
+          <Route path="/Bizora" element={<Bizora />} />
+          <Route path="/Bizora/*" element={<Bizora />} />
           <Route path="/projects/data-analytics" element={<FashionDemo />} />
           <Route path="/projects/internal-system" element={<InternalSystemDemo />} />
         </Routes>

@@ -85,6 +85,7 @@ export default function Footer() {
                 { name: t('nav_about'), href: "/about" },
                 { name: t('nav_process'), href: "/#process" },
                 { name: t('nav_cases'), href: "/#cases" },
+                { name: t('nav_bizora'), href: "/bizora" },
                 { name: t('nav_pricing'), href: "/#pricing" }
               ].map((item) => (
                 <li key={item.name}>
