@@ -474,70 +474,18 @@ export default function Bizora() {
 
               {/* Right Column: High-Res Official Mockup Asset */}
               <div className="lg:col-span-5 flex justify-center">
-                <div className="relative w-full max-w-[340px] sm:max-w-[380px]">
+                <div className="relative w-full max-w-[340px] sm:max-w-[400px]">
                   
-                  {/* Cyan Ambient Glow */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/30 to-blue-600/30 blur-3xl rounded-full -z-10" />
+                  {/* Cyan / Blue Ambient Glow */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/35 via-blue-600/30 to-teal-400/20 blur-3xl rounded-full -z-10 scale-95" />
 
-                  {/* iPhone Hardware Outer Rim */}
-                  <div className="relative rounded-[48px] p-3 bg-gradient-to-b from-slate-700 via-slate-850 to-slate-900 shadow-2xl shadow-cyan-950/60 border border-slate-700/80">
-                    
-                    {/* Screen Container */}
-                    <div className="relative rounded-[38px] overflow-hidden bg-slate-950 border border-slate-800 flex flex-col min-h-[580px] max-h-[640px]">
-                      
-                      {/* Dynamic Island */}
-                      <div className="absolute top-2.5 left-1/2 -translate-x-1/2 z-30">
-                        <div className="w-24 h-5 bg-black rounded-full flex items-center justify-between px-2.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-slate-900" />
-                          <div className="w-2 h-2 rounded-full bg-cyan-400/80 animate-pulse" />
-                        </div>
-                      </div>
-
-                      {/* Official High-Resolution Graphic Display */}
-                      <div className="relative flex-1 overflow-hidden">
-                        <img
-                          src="/assets/aistudio/bb39d0e6-2614-4ebd-8c77-d3576a13b31c_86466364.png"
-                          alt="Bizora - English For A Bigger Tomorrow"
-                          className="w-full h-full object-cover object-center"
-                        />
-
-                        {/* Interactive Overlay Card */}
-                        <div className="absolute bottom-4 left-3 right-3 p-4 rounded-2xl backdrop-blur-xl bg-slate-950/80 border border-cyan-500/30 shadow-2xl space-y-2.5">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <img
-                                src="/assets/aistudio/Glossy_Bi_Tech_App_Icon_10c3021a.png"
-                                alt="Bizora Icon"
-                                className="w-7 h-7 rounded-lg shadow-sm"
-                              />
-                              <div>
-                                <span className="text-xs font-bold text-white block">Bizora Coach</span>
-                                <span className="text-[10px] text-cyan-300 block">Lesson 04 · Negotiation</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">
-                              <Flame className="w-3 h-3 text-cyan-400" />
-                              <span>7 Day Streak</span>
-                            </div>
-                          </div>
-
-                          <p className="text-[11px] text-slate-200 leading-snug">
-                            "We value our partnership; however, given our volume, we propose capping the adjustment at 3%."
-                          </p>
-
-                          <div className="flex items-center justify-between pt-1 border-t border-slate-800 text-[10px]">
-                            <span className="text-slate-400">Executive Score:</span>
-                            <span className="text-cyan-400 font-bold">96% Confident & Firm</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* iOS Bottom Navigation Bar Line */}
-                      <div className="py-1.5 bg-slate-950 flex justify-center">
-                        <div className="w-32 h-1 bg-slate-700 rounded-full" />
-                      </div>
-
-                    </div>
+                  {/* High-Resolution iPhone Mockup Graphic */}
+                  <div className="relative group transition-transform duration-500 hover:scale-[1.02]">
+                    <img
+                      src="/assets/aistudio/Bizora_Coach_Sunrise_Mockup_af018c1a.png"
+                      alt="Bizora Business English App on iPhone"
+                      className="w-full h-auto drop-shadow-[0_25px_35px_rgba(0,0,0,0.7)] object-contain select-none"
+                    />
                   </div>
 
                 </div>

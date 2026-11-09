@@ -64,7 +64,7 @@ export default function CaseStudies() {
         mn: "Бизнес эрхлэгчид, үүсгэн байгуулагчдад зориулсан 10 минутын хичээл, AI ярианы дасгалжуулагчтай бизнесийн англи хэлний аппликейшн.", 
         en: "Executive business English app for founders and business owners with 10-minute micro-lessons and real-time AI speech coaching." 
       },
-      image: "/assets/aistudio/bb39d0e6-2614-4ebd-8c77-d3576a13b31c_86466364.png",
+      image: "/assets/aistudio/Bizora_Coach_Sunrise_Mockup_af018c1a.png",
       link: "/bizora",
       stack: ["iOS", "AI Speech Coach", "React", "Mobile"]
     },
