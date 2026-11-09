@@ -25,6 +25,8 @@ import {
   Star
 } from "lucide-react";
 
+export const BIZORA_APP_STORE_URL = "https://apps.apple.com/us/app/bizora-business-english/id6827551432";
+
 interface PracticeScenario {
   id: string;
   category: { en: string; mn: string };
@@ -279,9 +281,9 @@ export default function Bizora() {
 
             <Link to="/bizora" className="flex items-center gap-3 group">
               <img
-                src="/assets/aistudio/logo_efb7f705.png"
+                src="/assets/aistudio/whiteColor_daeeabab.png"
                 alt="Bizora"
-                className="h-7 sm:h-8 object-contain transition-transform group-hover:scale-105"
+                className="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105"
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
@@ -339,7 +341,9 @@ export default function Bizora() {
 
             {/* Apple App Store CTA */}
             <a
-              href="#subscription"
+              href={BIZORA_APP_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 hover:from-cyan-300 hover:to-teal-200 shadow-md shadow-cyan-500/25 transition-all duration-200 active:scale-95 whitespace-nowrap"
             >
               <AppleIcon className="w-4 h-4 fill-current" />
@@ -434,7 +438,9 @@ export default function Bizora() {
                 {/* Call To Actions */}
                 <div className="pt-2 flex flex-wrap items-center gap-4">
                   <a
-                    href="#subscription"
+                    href={BIZORA_APP_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl text-sm font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 hover:from-cyan-300 hover:to-teal-200 shadow-xl shadow-cyan-500/25 transition-all duration-200 active:scale-95"
                   >
                     <AppleIcon className="w-5 h-5 fill-current" />
@@ -1056,7 +1062,9 @@ export default function Bizora() {
 
                 <div className="pt-8">
                   <a
-                    href="#subscription"
+                    href={BIZORA_APP_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-full py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-750 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 border border-slate-700 transition-colors"
                   >
                     <AppleIcon className="w-4 h-4 fill-current" />
@@ -1113,7 +1121,9 @@ export default function Bizora() {
 
                 <div className="pt-8">
                   <a
-                    href="#subscription"
+                    href={BIZORA_APP_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 hover:from-cyan-300 hover:to-teal-200 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 transition-all duration-200 active:scale-95"
                   >
                     <AppleIcon className="w-4 h-4 fill-current" />
@@ -1246,7 +1256,9 @@ export default function Bizora() {
 
                 <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
                   <a
-                    href="#subscription"
+                    href={BIZORA_APP_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-3 px-7 py-3.5 rounded-2xl text-sm font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 hover:from-cyan-300 hover:to-teal-200 shadow-xl shadow-cyan-500/30 transition-all duration-200 active:scale-95"
                   >
                     <AppleIcon className="w-5 h-5 fill-current" />
@@ -1317,11 +1329,19 @@ export default function Bizora() {
   );
 }
 
-// Apple Logo SVG
+// Apple Logo SVG (Using official Apple SVG mark provided)
 function AppleIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 170 170" className={className}>
-      <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.66-7.79-11.89-14.24-5.35-8.2-9.61-17.65-12.79-28.34-3.17-10.7-4.77-21.2-4.77-31.5 0-14.54 3.84-26.65 11.53-36.33 7.68-9.68 17.2-14.59 28.56-14.73 4.89 0 10.14 1.3 15.75 3.9 5.62 2.6 9.4 3.98 11.36 4.13 1.52-.2 5.51-1.63 11.96-4.29 6.45-2.66 12.03-3.83 16.74-3.52 12.51.98 22.42 5.43 29.74 13.35-10.99 6.64-16.38 15.77-16.17 27.4.22 9.03 3.69 16.64 10.42 22.84 6.73 6.2 14.56 9.77 23.49 10.71-2.29 6.96-4.89 13.59-7.82 19.89zm-29.35-106.66c0-6.19 2.29-12.06 6.87-17.61 4.58-5.55 10.23-9.45 16.96-11.71 1.09 5.44.87 11.09-.65 16.96-1.52 5.87-4.46 11.2-8.81 15.99-4.24 4.57-9.3 7.94-15.18 10.12-.44-2.61-.7-5.29-.79-8.02-.09-1.9-.4-3.8-.4-5.73z" />
+    <svg
+      viewBox="0 0 814 1000"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      xmlSpace="preserve"
+    >
+      <path
+        fill="currentColor"
+        d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105.6-57-155.5-127C46.7 790.7 0 663 0 541.8c0-194.4 126.4-297.5 250.8-297.5 66.1 0 121.2 43.4 162.7 43.4 39.5 0 101.1-46 176.3-46 28.5 0 130.9 2.6 198.3 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"
+      />
     </svg>
   );
 }
