@@ -69,6 +69,18 @@ export default function CaseStudies() {
       stack: ["iOS", "AI Speech Coach", "React", "Mobile"]
     },
     {
+      id: 21,
+      category: "Website",
+      title: { mn: "Тусгал ЕБС - tusgalschool.mn", en: "Tusgal School - tusgalschool.mn" },
+      description: { 
+        mn: "Тусгал ерөнхий боловсролын сургуулийн албан ёсны вэб сайт. Сурагчдын элсэлтийн бүртгэл, сургалтын хөтөлбөр, сургуулийн амьдрал болон олон хэлний сонголттой орчин үеийн цогц систем.", 
+        en: "Official website for 'Tusgal' School (Grades 1–12). Admissions portal, academic programmes, student life showcase, and multilingual educational platform." 
+      },
+      image: "/assets/aistudio/image_bc0cb000.png",
+      link: "https://www.tusgalschool.mn/",
+      stack: ["Next.js", "i18n", "Tailwind", "Admissions"]
+    },
+    {
       id: 2,
       category: "Mobile",
       title: { mn: "Хувь хүний хөгжлийн бүрэн автомат апп", en: "Personal Development Automation App" },
