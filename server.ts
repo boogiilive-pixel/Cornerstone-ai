@@ -211,18 +211,36 @@ async function startServer() {
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
+    if (process.env.GOOGLE_RUNTIME && !process.env.DISABLE_HMR) {
+      process.env.DISABLE_HMR = "true";
+    }
+    const vitePromise = createViteServer({
+      server: { middlewareMode: true, hmr: false },
       appType: "custom",
     });
-    
-    app.use(vite.middlewares);
+
+    vitePromise.catch((err) => {
+      console.error("Failed to initialize Vite middleware:", err);
+      process.exit(1);
+    });
+
+    app.use(async (req, res, next) => {
+      try {
+        const vite = await vitePromise;
+        vite.middlewares(req, res, next);
+      } catch (e) {
+        next(e);
+      }
+    });
 
     // SPA fallback
     app.get("*", async (req, res, next) => {
       const url = req.originalUrl;
+      let vite: Awaited<ReturnType<typeof createViteServer>> | null = null;
       try {
-        let template = fs.readFileSync(path.resolve(__dirname, "index.html"), "utf-8");
+        vite = await vitePromise;
+        const rootDir = __dirname || process.cwd();
+        let template = fs.readFileSync(path.resolve(rootDir, "index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
         res.status(200).set({ "Content-Type": "text/html" }).end(template);
       } catch (e) {

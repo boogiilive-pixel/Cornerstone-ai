@@ -232,14 +232,37 @@ export default function About() {
                   : "Founder of Cornerstone AI, defining the company's strategy and product direction. Supporting Mongolian businesses through AI solutions, web and mobile development, and brand strategy, building the future with the power of technology. For him, technology is not just a goal — it's a tool. He believes true value lies in asking the right questions and creating solutions that meet real business needs. This philosophy is the foundation of all solutions presented by Cornerstone AI."}
               </p>
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-3">
+              <div className="flex flex-wrap items-stretch justify-center md:justify-start gap-3">
                 {[
-                  { num: "9+", label: language === 'mn' ? "Платформ" : "Platforms" },
-                  { num: "AI", label: language === 'mn' ? "Чиглэл" : "Focus" },
-                  { num: "MN", label: language === 'mn' ? "Зах зээл" : "Market" },
+                  {
+                    num: "22+",
+                    label: language === 'mn' ? "Платформ" : "Platforms",
+                    isLarge: true,
+                  },
+                  {
+                    num: language === 'mn'
+                      ? "Зөвлөх, AI автоматжуулалт, Брэндинг, Маркетинг"
+                      : "Consulting, AI Automation, Branding, Marketing",
+                    label: language === 'mn' ? "Чиглэл" : "Focus",
+                    isLarge: false,
+                  },
+                  {
+                    num: language === 'mn' ? "Дотоод болон Гадаад" : "Domestic & Global",
+                    label: language === 'mn' ? "Зах зээл" : "Market",
+                    isLarge: false,
+                  },
                 ].map((s) => (
-                  <div key={s.label} className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-center min-w-[100px]">
-                    <div className="text-xl font-bold text-white mb-0.5">{s.num}</div>
+                  <div
+                    key={s.label}
+                    className="px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-center min-w-[115px] max-w-xs flex flex-col justify-center"
+                  >
+                    <div
+                      className={`${
+                        s.isLarge ? "text-xl" : "text-sm leading-snug"
+                      } font-bold text-white mb-1`}
+                    >
+                      {s.num}
+                    </div>
                     <div className="text-[9px] uppercase tracking-widest text-white/40">{s.label}</div>
                   </div>
                 ))}
